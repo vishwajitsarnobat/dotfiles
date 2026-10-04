@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# osd <title> <0-100>   - shows/updates one small popup with a level bar
+ID_FILE="${XDG_RUNTIME_DIR:-/tmp}/osd-id"
+id=$(cat "$ID_FILE" 2>/dev/null || echo 0)
+new=$(notify-send -a osd -u low -p -r "$id" -h "int:value:$2" "$1" 2>/dev/null) && echo "$new" > "$ID_FILE"

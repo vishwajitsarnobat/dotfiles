@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+if makoctl mode 2>/dev/null | grep -q do-not-disturb; then
+    echo '{"text": "󰂛", "class": "on", "tooltip": "Notifications paused - click to resume"}'
+else
+    echo '{"text": "󰂚", "class": "off", "tooltip": "Notifications on - click to pause"}'
+fi

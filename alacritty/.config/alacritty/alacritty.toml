@@ -1,0 +1,43 @@
+# Soft pastel colours on a GNOME-dark grey background
+[window]
+padding = { x = 16, y = 14 }
+opacity = 0.95
+
+[font]
+normal = { family = "JetBrainsMono Nerd Font" }
+size = 12
+
+[cursor]
+style = { shape = "Beam", blinking = "On" }
+
+[colors.primary]
+background = "#1e1e22"
+foreground = "#e3e3e8"
+
+[colors.cursor]
+text   = "#1e1e22"
+cursor = "#8fb8f6"
+
+[colors.selection]
+background = "#34343c"
+text = "CellForeground"
+
+[colors.normal]
+black   = "#3a3a42"
+red     = "#f2a1a8"
+green   = "#a6dba0"
+yellow  = "#f3d98b"
+blue    = "#8fb8f6"
+magenta = "#c8a6f0"
+cyan    = "#8ed6d6"
+white   = "#d4d4dc"
+
+[colors.bright]
+black   = "#6b6b76"
+red     = "#f7bcc2"
+green   = "#bfe8b9"
+yellow  = "#f7e4a8"
+blue    = "#a9c9fa"
+magenta = "#d8c0f5"
+cyan    = "#a9e3e3"
+white   = "#f2f2f5"

@@ -1,0 +1,120 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 30,
+    "margin-top": 4,
+    "margin-bottom": 0,
+    "margin-left": 8,
+    "margin-right": 8,
+    "spacing": 0,
+
+    "modules-left":   ["niri/workspaces", "custom/media"],
+    "modules-center": ["clock", "niri/window"],
+    "modules-right":  ["tray", "idle_inhibitor", "custom/dnd", "pulseaudio", "network", "bluetooth", "battery", "custom/power"],
+
+    "clock": {
+        "format": "{:%a, %d %b   %I:%M %p}",
+        "tooltip-format": "<span size='large'><b>{:%A, %d %B %Y}</b></span>\n\n<tt>{calendar}</tt>",
+        "calendar": {
+            "mode": "month",
+            "on-scroll": 1,
+            "format": {
+                "months":   "<span color='#f2f2f5'><b>{}</b></span>",
+                "weekdays": "<span color='#8fb8f6'><b>{}</b></span>",
+                "days":     "<span color='#c4c4cc'>{}</span>",
+                "today":    "<span color='#1e1e22' background='#8fb8f6'><b>{}</b></span>"
+            }
+        },
+        "actions": {
+            "on-scroll-up": "shift_down",
+            "on-scroll-down": "shift_up"
+        }
+    },
+
+    "custom/media": {
+        "exec": "~/.local/bin/waybar-media",
+        "return-type": "json",
+        "interval": 2,
+        "max-length": 40,
+        "on-click": "playerctl play-pause",
+        "on-click-right": "playerctl next",
+        "on-click-middle": "playerctl previous"
+    },
+
+    "idle_inhibitor": {
+        "format": "{icon}",
+        "format-icons": { "activated": "󰅶", "deactivated": "󰾪" },
+        "tooltip-format-activated": "Keeping the screen awake",
+        "tooltip-format-deactivated": "Screen sleeps normally"
+    },
+
+    "custom/dnd": {
+        "exec": "~/.local/bin/dnd-status",
+        "return-type": "json",
+        "interval": 10,
+        "signal": 8,
+        "on-click": "~/.local/bin/dnd-toggle"
+    },
+
+    "niri/window": {
+        "format": "{title}",
+        "max-length": 40,
+        "rewrite": {
+            "": "Desktop",
+            "^.*@.*:.*$": "Terminal"
+        }
+    },
+
+    "niri/workspaces": {
+        "format": "{index}"
+    },
+
+    "pulseaudio": {
+        "format": "{icon}",
+        "format-muted": "󰝟",
+        "format-icons": { "default": ["󰕿", "󰖀", "󰕾"] },
+        "tooltip-format": "Volume {volume}%",
+        "on-click": "env XDG_CURRENT_DESKTOP=GNOME gnome-control-center sound",
+        "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+    },
+
+    "network": {
+        "format-wifi": "󰤨",
+        "format-ethernet": "󰈀",
+        "format-disconnected": "󰤭",
+        "tooltip-format-wifi": "{essid} ({signalStrength}%)",
+        "tooltip-format-ethernet": "Wired",
+        "tooltip-format-disconnected": "Offline",
+        "on-click": "env XDG_CURRENT_DESKTOP=GNOME gnome-control-center wifi"
+    },
+
+    "bluetooth": {
+        "format": "󰂯",
+        "format-off": "󰂲",
+        "format-disabled": "󰂲",
+        "format-connected": "󰂱",
+        "tooltip-format": "Bluetooth: {status}",
+        "tooltip-format-connected": "{device_alias}",
+        "on-click": "env XDG_CURRENT_DESKTOP=GNOME gnome-control-center bluetooth"
+    },
+
+    "battery": {
+        "states": { "warning": 30, "critical": 15 },
+        "format": "{icon}  {capacity}%",
+        "format-charging": "󰂄  {capacity}%",
+        "format-plugged": "󰂄  {capacity}%",
+        "format-icons": ["󰁺", "󰁼", "󰁾", "󰂀", "󰁹"],
+        "tooltip-format": "{timeTo}",
+        "on-click": "env XDG_CURRENT_DESKTOP=GNOME gnome-control-center power"
+    },
+
+    "tray": {
+        "icon-size": 17,
+        "spacing": 8
+    },
+    "custom/power": {
+        "format": "⏻",
+        "tooltip": false,
+        "on-click": "wlogout -b 5"
+    }
+}

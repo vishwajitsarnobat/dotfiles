@@ -1,0 +1,105 @@
+/* Centre island - GNOME-dark greys, soft pastel touches */
+
+* {
+    font-family: "Adwaita Sans", "JetBrainsMono Nerd Font";
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 0;
+    min-height: 0;
+}
+
+window#waybar {
+    background: transparent;
+    color: #f2f2f5;
+}
+
+/* Three separate islands: workspaces | time + window | status */
+.modules-left,
+.modules-center,
+.modules-right {
+    background: rgba(30, 30, 34, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    padding: 0 8px;
+}
+
+#clock {
+    padding: 0 10px 0 8px;
+    font-weight: 700;
+}
+
+#window {
+    padding: 0 10px 0 4px;
+    font-weight: 500;
+    color: #a8a8b3;
+}
+
+#workspaces { margin: 0; }
+#workspaces button {
+    min-width: 20px;
+    padding: 0 8px;
+    margin: 4px 2px;
+    color: #8b8b96;
+    background: transparent;
+    border-radius: 999px;
+}
+#workspaces button.active,
+#workspaces button.focused {
+    background: #8fb8f6;
+    color: #1e1e22;
+    padding: 0 12px;
+}
+#workspaces button:hover {
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: none;
+}
+#workspaces button.active:hover,
+#workspaces button.focused:hover { background: #8fb8f6; }
+#workspaces button.urgent { color: #f2a1a8; }
+
+/* Status icons - one size, each with a soft pastel tint */
+#idle_inhibitor, #custom-dnd,
+#pulseaudio, #network, #bluetooth, #battery, #custom-power {
+    font-family: "JetBrainsMono Nerd Font";
+    font-size: 17px;
+    padding: 0 8px;
+}
+#idle_inhibitor           { color: #8b8b96; }
+#idle_inhibitor.activated { color: #f3d98b; }
+#custom-dnd               { color: #d4d4dc; }
+#custom-dnd.on            { color: #f2a1a8; }
+#pulseaudio   { color: #c8a6f0; }
+#network      { color: #8fb8f6; }
+#bluetooth    { color: #8ed6d6; }
+#battery      { color: #a6dba0; font-family: "Adwaita Sans", "JetBrainsMono Nerd Font"; font-size: 14px; }
+#custom-power { color: #f2a1a8; padding-right: 8px; }
+#tray { padding: 0 4px; }
+
+/* Now playing - always shown, lilac while something is playing */
+#custom-media {
+    padding: 0 12px;
+    margin: 4px 2px 4px 8px;
+    border-radius: 999px;
+    background: rgba(200, 166, 240, 0.16);
+    color: #d8c0f5;
+    font-weight: 500;
+}
+#custom-media.paused,
+#custom-media.idle { color: #8b8b96; background: rgba(255, 255, 255, 0.06); }
+
+#pulseaudio.muted,
+#network.disconnected,
+#bluetooth.off,
+#bluetooth.disabled { color: #6b6b76; }
+#battery.warning:not(.charging)  { color: #f3d98b; }
+#battery.critical:not(.charging) { color: #f2a1a8; }
+#custom-power:hover { color: #f7bcc2; }
+
+tooltip {
+    background: rgba(30, 30, 34, 0.97);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+}
+tooltip { padding: 6px; }
+tooltip label { color: #f2f2f5; font-weight: 500; font-family: "Adwaita Sans"; }

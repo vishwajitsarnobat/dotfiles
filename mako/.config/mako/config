@@ -1,0 +1,36 @@
+font=Adwaita Sans 12
+format=<b>%s</b>\n%b
+background-color=#2b2b33
+text-color=#f2f2f5
+border-color=#8fb8f6
+border-size=2
+border-radius=14
+padding=14,18
+margin=10,12
+outer-margin=6
+width=380
+max-icon-size=40
+progress-color=over #8fb8f655
+default-timeout=6000
+max-history=1
+
+[urgency=low]
+border-color=#6b6b76
+
+[urgency=high]
+border-color=#f2a1a8
+default-timeout=0
+
+[mode=do-not-disturb]
+invisible=1
+
+# Volume / brightness popup: small, short-lived, replaces itself
+[app-name=osd]
+format=<b>%s</b>
+width=260
+padding=12,16
+default-timeout=1200
+border-color=#8fb8f6
+
+[mode=do-not-disturb app-name=osd]
+invisible=0

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Usage: setwall ~/Pictures/Wallpapers/blue-hills.png
+WDIR="$HOME/Pictures/Wallpapers"
+if [ ! -f "${1:-}" ]; then
+    echo "Usage: setwall <image file>"
+    echo "Saved wallpapers:"
+    ls -1 "$WDIR" 2>/dev/null | sed 's/^/  /'
+    exit 1
+fi
+cp "$1" "$HOME/Pictures/wallpaper.jpg"
+pkill -x swaybg 2>/dev/null
+setsid -f swaybg -m fill -i "$HOME/Pictures/wallpaper.jpg" >/dev/null 2>&1
+"$HOME/.local/bin/lockscreen-bg" &
+echo "Wallpaper set."

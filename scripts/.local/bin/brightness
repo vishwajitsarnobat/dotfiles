@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# brightness up | down
+cur=$(brightnessctl -c backlight -m | cut -d, -f4 | tr -d %)
+case "$1" in
+    up)   brightnessctl -q -c backlight set 5%+ ;;
+    down) if [ "${cur:-100}" -le 10 ]; then
+              brightnessctl -q -c backlight set 5%
+          else
+              brightnessctl -q -c backlight set 5%-
+          fi ;;
+esac
+val=$(brightnessctl -c backlight -m | cut -d, -f4 | tr -d %)
+"$HOME/.local/bin/osd" "󰃠  Brightness  $val%" "$val"

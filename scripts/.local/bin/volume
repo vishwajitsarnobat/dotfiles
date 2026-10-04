@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# volume up | down | mute | mic-mute
+case "$1" in
+    up)       wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ ;;
+    down)     wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- ;;
+    mute)     wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle ;;
+    mic-mute) wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
+              if wpctl get-volume @DEFAULT_AUDIO_SOURCE@ | grep -q MUTED; then
+                  "$HOME/.local/bin/osd" "Microphone off" 0
+              else
+                  "$HOME/.local/bin/osd" "Microphone on" 100
+              fi
+              exit 0 ;;
+esac
+out=$(wpctl get-volume @DEFAULT_AUDIO_SINK@)
+val=$(echo "$out" | awk '{printf "%d", $2 * 100 + 0.5}')
+if echo "$out" | grep -q MUTED; then
+    "$HOME/.local/bin/osd" "󰝟  Muted" 0
+else
+    "$HOME/.local/bin/osd" "󰕾  Volume  $val%" "$val"
+fi

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Makes a blurred, darkened copy of the wallpaper for the lock screen.
+WALL="$HOME/Pictures/wallpaper.jpg"
+BLUR="$HOME/.cache/lockscreen.jpg"
+[ -f "$WALL" ] || exit 0
+[ -f "$BLUR" ] && [ "$BLUR" -nt "$WALL" ] && exit 0
+IM=$(command -v magick || command -v convert) || exit 0
+mkdir -p "$HOME/.cache"
+"$IM" "$WALL" -resize 1920x -blur 0x18 -fill '#1e1e22' -colorize 40% "$BLUR" 2>/dev/null
