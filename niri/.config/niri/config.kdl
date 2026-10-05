@@ -72,7 +72,6 @@ spawn-sh-at-startup "[ -f ~/Pictures/wallpaper.jpg ] && swaybg -m fill -i ~/Pict
 spawn-sh-at-startup "swayidle -w timeout 15 'pidof swaylock >/dev/null && niri msg action power-off-monitors' timeout 300 '~/.local/bin/lockscreen' timeout 315 'niri msg action power-off-monitors' before-sleep '~/.local/bin/lockscreen' lock '~/.local/bin/lockscreen'"
 spawn-at-startup "/usr/libexec/polkit-mate-authentication-agent-1"
 spawn-sh-at-startup "wl-paste --watch cliphist store"
-spawn-sh-at-startup "wlsunset -l 19.0 -L 73.1"
 
 // ---------- Window rules ----------
 // Rounded corners on all windows (same radius as GNOME apps)
@@ -115,6 +114,7 @@ binds {
     Super+Alt+S allow-when-locked=true hotkey-overlay-title=null { spawn-sh "pkill orca || exec orca"; }
     Mod+Alt+V hotkey-overlay-title="Clipboard history" { spawn-sh "cliphist list | fuzzel --dmenu --prompt '󰅍  ' | cliphist decode | wl-copy"; }
     Mod+Shift+E hotkey-overlay-title="Power menu" { spawn-sh "~/.local/bin/powermenu"; }
+    Mod+Alt+N hotkey-overlay-title="Night light" { spawn-sh "pkill wlsunset || wlsunset -t 4000 -T 4001"; }
 
     // Volume and brightness: 5% steps with a small popup
     XF86AudioRaiseVolume  allow-when-locked=true { spawn-sh "~/.local/bin/volume up"; }
