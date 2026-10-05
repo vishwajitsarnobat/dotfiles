@@ -4,13 +4,11 @@ My [niri](https://github.com/YaLTeR/niri) setup on Fedora, alongside GNOME.
 Dark GNOME greys, soft pastel accents, one blue focus colour, and rounded
 "island" bars, inspired by [saneAspect](https://www.youtube.com/@saneAspect).
 
-![Desktop](screenshots/desktop.png)
-
 | | |
 | --- | --- |
-| ![Fastfetch](screenshots/fastfetch.png) | ![Launcher](screenshots/launcher.png) |
-| ![Calendar](screenshots/calendar.png) | ![Notification](screenshots/notification.png) |
-| ![Power menu](screenshots/powermenu.png) | |
+| ![Desktop](screenshots/desktop.png) | ![Fastfetch](screenshots/fastfetch.png) |
+| ![Launcher](screenshots/launcher.png) | ![Calendar](screenshots/calendar.png) |
+| ![Notification](screenshots/notification.png) | ![Power menu](screenshots/powermenu.png) |
 
 ## What's inside
 
