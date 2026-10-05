@@ -1,0 +1,64 @@
+#!/usr/bin/env python3
+# Clock + hover calendar for the bar.
+#   waybar-calendar          -> prints the bar text and calendar tooltip
+#   waybar-calendar next     -> show next month      (scroll down)
+#   waybar-calendar prev     -> show previous month  (scroll up)
+#   waybar-calendar reset    -> back to this month   (click)
+import calendar, datetime, json, os, subprocess, sys
+
+STATE = os.path.expanduser("~/.cache/waybar-calendar-offset")
+ACCENT, ON_ACCENT, DIM, SOFT = "#8fb8f6", "#1e1e22", "#6b6b76", "#d4d4dc"
+# Grid: the terminal's font - its half-circle shapes give today a round pill.
+GRID = "JetBrainsMono Nerd Font Mono"
+LEFT, RIGHT = "", ""         # rounded ends, exactly one line tall
+CELL = 4                                 # every day takes 4 characters
+WIDTH = CELL * 7
+
+def read_offset():
+    try:
+        return int(open(STATE).read().strip())
+    except Exception:
+        return 0
+
+if len(sys.argv) > 1:
+    n = read_offset()
+    n = {"next": n + 1, "prev": n - 1}.get(sys.argv[1], 0)
+    os.makedirs(os.path.dirname(STATE), exist_ok=True)
+    with open(STATE, "w") as f:
+        f.write(str(n))
+    subprocess.run(["pkill", "-RTMIN+9", "waybar"])
+    sys.exit(0)
+
+now = datetime.datetime.now()
+offset = read_offset()
+y, m = divmod(now.year * 12 + (now.month - 1) + offset, 12)
+m += 1
+
+def g(text, **attrs):
+    """Text in the grid font."""
+    extra = "".join(f" {k}='{v}'" for k, v in attrs.items())
+    return f"<span font_family='{GRID}' size='larger'{extra}>{text}</span>"   # a step above the other tooltips
+
+def cell(day):
+    if day == 0:
+        return " " * CELL
+    if (y, m) == (now.year, now.month) and day == now.day:
+        num = str(day)
+        pill = (f"<span color='{ACCENT}'>{LEFT}</span>"
+                f"<span background='{ACCENT}' color='{ON_ACCENT}' weight='bold'>{num}</span>"
+                f"<span color='{ACCENT}'>{RIGHT}</span>")
+        return pill if day >= 10 else " " + pill        # keep the digit in its column
+    return f" <span color='{SOFT}'>{day:>2}</span> "
+
+gap = "<span size='4pt'> </span>"         # small space between rows
+
+lines = [
+    g(f"{calendar.month_name[m]} {y}".center(WIDTH), color=ACCENT, weight="bold"),
+    gap,
+    g("".join(d.center(CELL) for d in ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"]), color=DIM, weight="bold"),
+]
+for week in calendar.Calendar(firstweekday=6).monthdayscalendar(y, m):   # Sunday first
+    lines += [gap, g("".join(cell(d) for d in week))]
+
+print(json.dumps({"text": f"{now:%a, %d %b}   {now:%I:%M %p}",
+                  "tooltip": "\n".join(lines)}))

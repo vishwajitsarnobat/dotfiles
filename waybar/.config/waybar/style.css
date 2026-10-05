@@ -1,4 +1,25 @@
-/* Centre island - GNOME-dark greys, soft pastel touches */
+/* Three rounded islands - GNOME-dark greys, soft pastel touches */
+@define-color fg          #f2f2f5;
+@define-color muted       #a8a8b3;
+@define-color dim         #8b8b96;
+@define-color off         #6b6b76;
+@define-color island      rgba(30, 30, 34, 0.96);
+@define-color island_line rgba(255, 255, 255, 0.08);
+@define-color hover       rgba(255, 255, 255, 0.08);
+@define-color accent      #8fb8f6;
+@define-color on_accent   #1e1e22;
+@define-color pink        #f2a1a8;
+@define-color pink_hover  #f7bcc2;
+@define-color yellow      #f3d98b;
+@define-color lilac       #c8a6f0;
+@define-color blue        #8fb8f6;
+@define-color teal        #8ed6d6;
+@define-color green       #a6dba0;
+@define-color soft        #d4d4dc;
+@define-color media_bg    rgba(200, 166, 240, 0.16);
+@define-color media_fg    #d8c0f5;
+@define-color media_idle  rgba(255, 255, 255, 0.06);
+@define-color tooltip_bg  rgba(30, 30, 34, 0.97);
 
 * {
     font-family: "Adwaita Sans", "JetBrainsMono Nerd Font";
@@ -11,20 +32,20 @@
 
 window#waybar {
     background: transparent;
-    color: #f2f2f5;
+    color: @fg;
 }
 
 /* Three separate islands: workspaces | time + window | status */
 .modules-left,
 .modules-center,
 .modules-right {
-    background: rgba(30, 30, 34, 0.96);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: @island;
+    border: 1px solid @island_line;
     border-radius: 999px;
     padding: 0 8px;
 }
 
-#clock {
+#clock, #custom-clock {
     padding: 0 10px 0 8px;
     font-weight: 700;
 }
@@ -32,7 +53,7 @@ window#waybar {
 #window {
     padding: 0 10px 0 4px;
     font-weight: 500;
-    color: #a8a8b3;
+    color: @muted;
 }
 
 #workspaces { margin: 0; }
@@ -40,40 +61,40 @@ window#waybar {
     min-width: 20px;
     padding: 0 8px;
     margin: 4px 2px;
-    color: #8b8b96;
+    color: @dim;
     background: transparent;
     border-radius: 999px;
 }
 #workspaces button.active,
 #workspaces button.focused {
-    background: #8fb8f6;
-    color: #1e1e22;
+    background: @accent;
+    color: @on_accent;
     padding: 0 12px;
 }
 #workspaces button:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: @hover;
     box-shadow: none;
 }
 #workspaces button.active:hover,
-#workspaces button.focused:hover { background: #8fb8f6; }
-#workspaces button.urgent { color: #f2a1a8; }
+#workspaces button.focused:hover { background: @accent; }
+#workspaces button.urgent { color: @pink; }
 
-/* Status icons - one size, each with a soft pastel tint */
+/* Status icons - one size, each with a soft tint */
 #idle_inhibitor, #custom-dnd,
 #pulseaudio, #network, #bluetooth, #battery, #custom-power {
     font-family: "JetBrainsMono Nerd Font";
     font-size: 17px;
     padding: 0 8px;
 }
-#idle_inhibitor           { color: #8b8b96; }
-#idle_inhibitor.activated { color: #f3d98b; }
-#custom-dnd               { color: #d4d4dc; }
-#custom-dnd.on            { color: #f2a1a8; }
-#pulseaudio   { color: #c8a6f0; }
-#network      { color: #8fb8f6; }
-#bluetooth    { color: #8ed6d6; }
-#battery      { color: #a6dba0; font-family: "Adwaita Sans", "JetBrainsMono Nerd Font"; font-size: 14px; }
-#custom-power { color: #f2a1a8; padding-right: 8px; }
+#idle_inhibitor           { color: @dim; }
+#idle_inhibitor.activated { color: @yellow; }
+#custom-dnd               { color: @soft; }
+#custom-dnd.on            { color: @pink; }
+#pulseaudio   { color: @lilac; }
+#network      { color: @blue; }
+#bluetooth    { color: @teal; }
+#battery      { color: @green; font-family: "Adwaita Sans", "JetBrainsMono Nerd Font"; font-size: 14px; }
+#custom-power { color: @pink; padding-right: 8px; }
 #tray { padding: 0 4px; }
 
 /* Now playing - always shown, lilac while something is playing */
@@ -81,25 +102,25 @@ window#waybar {
     padding: 0 12px;
     margin: 4px 2px 4px 8px;
     border-radius: 999px;
-    background: rgba(200, 166, 240, 0.16);
-    color: #d8c0f5;
+    background: @media_bg;
+    color: @media_fg;
     font-weight: 500;
 }
 #custom-media.paused,
-#custom-media.idle { color: #8b8b96; background: rgba(255, 255, 255, 0.06); }
+#custom-media.idle { color: @dim; background: @media_idle; }
 
 #pulseaudio.muted,
 #network.disconnected,
 #bluetooth.off,
-#bluetooth.disabled { color: #6b6b76; }
-#battery.warning:not(.charging)  { color: #f3d98b; }
-#battery.critical:not(.charging) { color: #f2a1a8; }
-#custom-power:hover { color: #f7bcc2; }
+#bluetooth.disabled { color: @off; }
+#battery.warning:not(.charging)  { color: @yellow; }
+#battery.critical:not(.charging) { color: @pink; }
+#custom-power:hover { color: @pink_hover; }
 
 tooltip {
-    background: rgba(30, 30, 34, 0.97);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 12px;
+    background: @tooltip_bg;
+    border: 2px solid @accent;
+    border-radius: 14px;
+    padding: 10px 12px;
 }
-tooltip { padding: 6px; }
-tooltip label { color: #f2f2f5; font-weight: 500; font-family: "Adwaita Sans"; }
+tooltip label { color: @fg; font-weight: 500; font-family: "Adwaita Sans"; }

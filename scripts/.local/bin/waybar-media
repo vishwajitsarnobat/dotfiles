@@ -10,4 +10,25 @@ artist=$(playerctl metadata artist 2>/dev/null | esc)
 [ -z "$title" ] && title="Unknown"
 if [ "$status" = "Playing" ]; then icon="󰏤"; class="playing"; else icon="󰐊"; class="paused"; fi
 tip="$title"; [ -n "$artist" ] && tip="$artist - $title"
-echo "{\"text\": \"$icon  $title\", \"class\": \"$class\", \"tooltip\": \"$tip\\n\\nClick: play/pause   Right-click: next\"}"
+
+# Where it's playing from: app name, plus the website for browsers
+player=$(playerctl metadata --format '{{playerName}}' 2>/dev/null)
+player=${player%%.*}                       # "chromium.instance123" -> "chromium"
+case "$player" in
+    chromium|chrome|google-chrome) app="Google Chrome" ;;
+    brave)    app="Brave" ;;
+    firefox)  app="Firefox" ;;
+    spotify)  app="Spotify" ;;
+    vlc)      app="VLC" ;;
+    mpv)      app="mpv" ;;
+    "")       app="Unknown app" ;;
+    *)        app="${player^}" ;;
+esac
+url=$(playerctl metadata xesam:url 2>/dev/null)
+case "$url" in
+    http*) site=${url#*://}; site=${site%%/*}; site=${site#www.}
+           app="$app  ·  $site" ;;
+esac
+app=$(printf '%s' "$app" | esc)
+
+echo "{\"text\": \"$icon  $title\", \"class\": \"$class\", \"tooltip\": \"$tip\\nFrom: $app\\n\\nClick: play/pause   Right-click: next\"}"
