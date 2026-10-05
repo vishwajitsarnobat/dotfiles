@@ -10,7 +10,7 @@
 
     "modules-left":   ["niri/workspaces", "custom/media"],
     "modules-center": ["custom/clock", "niri/window"],
-    "modules-right":  ["tray", "idle_inhibitor", "custom/dnd", "pulseaudio", "network", "bluetooth", "battery", "custom/power"],
+    "modules-right":  ["tray", "custom/awake", "custom/dnd", "pulseaudio", "network", "bluetooth", "battery", "custom/power"],
 
     "custom/clock": {
         "exec": "~/.local/bin/waybar-calendar",
@@ -34,11 +34,12 @@
         "on-click-middle": "playerctl previous"
     },
 
-    "idle_inhibitor": {
-        "format": "{icon}",
-        "format-icons": { "activated": "󰅶", "deactivated": "󰾪" },
-        "tooltip-format-activated": "Keeping the screen awake",
-        "tooltip-format-deactivated": "Screen sleeps normally"
+    "custom/awake": {
+        "exec": "~/.local/bin/keep-awake",
+        "return-type": "json",
+        "interval": 10,
+        "signal": 10,
+        "on-click": "~/.local/bin/keep-awake toggle"
     },
 
     "custom/dnd": {
@@ -67,7 +68,7 @@
         "format-muted": "󰝟",
         "format-icons": { "default": ["󰕿", "󰖀", "󰕾"] },
         "tooltip-format": "Volume {volume}%",
-        "on-click": "env XDG_CURRENT_DESKTOP=GNOME gnome-control-center sound",
+        "on-click": "~/.local/bin/settings-panel sound",
         "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
     },
 
@@ -78,7 +79,7 @@
         "tooltip-format-wifi": "{essid} ({signalStrength}%)",
         "tooltip-format-ethernet": "Wired",
         "tooltip-format-disconnected": "Offline",
-        "on-click": "env XDG_CURRENT_DESKTOP=GNOME gnome-control-center wifi"
+        "on-click": "~/.local/bin/settings-panel wifi"
     },
 
     "bluetooth": {
@@ -88,7 +89,7 @@
         "format-connected": "󰂱",
         "tooltip-format": "Bluetooth: {status}",
         "tooltip-format-connected": "{device_alias}",
-        "on-click": "env XDG_CURRENT_DESKTOP=GNOME gnome-control-center bluetooth"
+        "on-click": "~/.local/bin/settings-panel bluetooth"
     },
 
     "battery": {
@@ -98,7 +99,7 @@
         "format-plugged": "󰂄  {capacity}%",
         "format-icons": ["󰁺", "󰁼", "󰁾", "󰂀", "󰁹"],
         "tooltip-format": "{timeTo}",
-        "on-click": "env XDG_CURRENT_DESKTOP=GNOME gnome-control-center power"
+        "on-click": "~/.local/bin/settings-panel power"
     },
 
     "tray": {

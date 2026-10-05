@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# keep-awake          -> status for the bar
+# keep-awake toggle   -> switch on / off
+if [ "${1:-}" = toggle ]; then
+    if pgrep -x swayidle >/dev/null; then
+        pkill -x swayidle;  msg="󰅶  Keep awake: on"
+    else
+        setsid -f "$HOME/.local/bin/idle-watch" >/dev/null 2>&1;  msg="󰾪  Keep awake: off"
+    fi
+    pkill -RTMIN+10 waybar
+    notify-send -a osd -u low "$msg" 2>/dev/null
+    exit 0
+fi
+if pgrep -x swayidle >/dev/null; then
+    echo '{"text": "󰾪", "class": "off", "tooltip": "Screen sleeps normally - click to keep awake"}'
+else
+    echo '{"text": "󰅶", "class": "on", "tooltip": "Keeping the screen awake - click to allow sleep"}'
+fi

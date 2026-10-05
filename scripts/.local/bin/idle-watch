@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Locks after 5 min idle; screen off 15 s after locking.
+exec swayidle -w \
+    timeout 15  'pidof swaylock >/dev/null && niri msg action power-off-monitors' \
+    timeout 300 "$HOME/.local/bin/lockscreen" \
+    timeout 315 'niri msg action power-off-monitors' \
+    before-sleep "$HOME/.local/bin/lockscreen" \
+    lock "$HOME/.local/bin/lockscreen"

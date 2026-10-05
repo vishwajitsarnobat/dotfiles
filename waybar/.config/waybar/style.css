@@ -80,14 +80,14 @@ window#waybar {
 #workspaces button.urgent { color: @pink; }
 
 /* Status icons - one size, each with a soft tint */
-#idle_inhibitor, #custom-dnd,
+#custom-awake, #custom-dnd,
 #pulseaudio, #network, #bluetooth, #battery, #custom-power {
     font-family: "JetBrainsMono Nerd Font";
     font-size: 17px;
     padding: 0 8px;
 }
-#idle_inhibitor           { color: @dim; }
-#idle_inhibitor.activated { color: @yellow; }
+#custom-awake             { color: @dim; }
+#custom-awake.on          { color: @yellow; }
 #custom-dnd               { color: @soft; }
 #custom-dnd.on            { color: @pink; }
 #pulseaudio   { color: @lilac; }

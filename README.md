@@ -78,12 +78,28 @@ Log out and pick **niri** on the login screen.
 | `Mod + D` | App launcher |
 | `Mod + E` | Files |
 | `Mod + Q` | Close window |
-| `Mod + Alt + V` | Clipboard history |
-| `Mod + N` | Clear all notifications |
-| `Mod + Shift + T` | Switch apps between light / dark |
-| `Mod + Alt + L` | Lock screen |
-| `Mod + Shift + E` | Power menu |
 | `Mod + Shift + /` | Show all keys |
+
+System keys are all `Mod + Alt + <letter>`. Most are toggles: press again
+to undo.
+
+| Key | Action |
+| --- | --- |
+| `Mod + Alt + W` | Wi-Fi settings |
+| `Mod + Alt + B` | Bluetooth settings |
+| `Mod + Alt + S` | Sound settings |
+| `Mod + Alt + D` | Do not disturb |
+| `Mod + Alt + K` | Keep awake |
+| `Mod + Alt + N` | Night light |
+| `Mod + Alt + T` | Switch apps between light / dark |
+| `Mod + Alt + C` | Clear all notifications |
+| `Mod + Alt + V` | Clipboard history |
+| `Mod + Alt + L` | Lock screen |
+| `Mod + Alt + P` | Power menu |
+
+Media keys (volume, mic mute, brightness) work too, even on the lock screen.
+On the Acer Aspire A514-56GM the mic-mute key (`Fn + F4`) sends
+`XF86Launch6` instead of `XF86AudioMicMute`, so it is bound separately.
 
 Window, workspace and monitor keys are niri's defaults.
 
@@ -96,7 +112,7 @@ Window, workspace and monitor keys are niri's defaults.
 | **Right** | Tray · keep awake · do not disturb · volume · Wi-Fi · Bluetooth · battery · power menu |
 
 Volume, Wi-Fi, Bluetooth and battery open the matching GNOME Settings page
-when clicked. Right-click volume to mute.
+when clicked, and close it on a second click. Right-click volume to mute.
 
 ## Helper commands
 
@@ -111,9 +127,11 @@ All live in `scripts/.local/bin`.
 | `volume`, `brightness`, `osd` | Media keys in 5% steps with a level popup |
 | `waybar-calendar`, `waybar-media` | The bar's calendar and now-playing |
 | `dnd-status`, `dnd-toggle` | Do-not-disturb button |
+| `keep-awake [toggle]` | Keep-awake button (stops and restarts `idle-watch`) |
+| `idle-watch` | Auto lock and screen-off timers |
+| `settings-panel <page>` | Open or close a GNOME Settings page (`wifi`, `bluetooth`, `sound`, `power`) |
 
-**Night light** is manual: `wlsunset -t 4000 -T 4001 &` to turn it on,
-`pkill wlsunset` to turn it off.
+**Night light** is manual: toggle it with `Mod + Alt + N`.
 
 **Auto lock:** the screen locks after 5 minutes idle. Once locked, the
 display turns off after 15 seconds.

@@ -69,7 +69,7 @@ animations { }
 spawn-at-startup "waybar"
 spawn-at-startup "mako"
 spawn-sh-at-startup "[ -f ~/Pictures/wallpaper.jpg ] && swaybg -m fill -i ~/Pictures/wallpaper.jpg || swaybg -c 1d1d20"
-spawn-sh-at-startup "swayidle -w timeout 15 'pidof swaylock >/dev/null && niri msg action power-off-monitors' timeout 300 '~/.local/bin/lockscreen' timeout 315 'niri msg action power-off-monitors' before-sleep '~/.local/bin/lockscreen' lock '~/.local/bin/lockscreen'"
+spawn-sh-at-startup "~/.local/bin/idle-watch"
 spawn-at-startup "/usr/libexec/polkit-mate-authentication-agent-1"
 spawn-sh-at-startup "wl-paste --watch cliphist store"
 
@@ -108,19 +108,28 @@ binds {
     Mod+T hotkey-overlay-title="Terminal: alacritty" { spawn "alacritty"; }
     Mod+D hotkey-overlay-title="App launcher: fuzzel" { spawn "fuzzel"; }
     Mod+E hotkey-overlay-title="Files" { spawn "nautilus" "--new-window"; }
-    Mod+N hotkey-overlay-title="Clear notifications" { spawn "makoctl" "dismiss" "--all"; }
-    Super+Alt+L hotkey-overlay-title="Lock screen" { spawn-sh "~/.local/bin/lockscreen"; }
-    Mod+Shift+T hotkey-overlay-title="Apps: light / dark" { spawn-sh "~/.local/bin/theme"; }
-    Super+Alt+S allow-when-locked=true hotkey-overlay-title=null { spawn-sh "pkill orca || exec orca"; }
+
+    // System keys: Mod+Alt+<letter>. Most are toggles - press again to undo.
+    Mod+Alt+W hotkey-overlay-title="Wi-Fi settings"     { spawn-sh "~/.local/bin/settings-panel wifi"; }
+    Mod+Alt+B hotkey-overlay-title="Bluetooth settings" { spawn-sh "~/.local/bin/settings-panel bluetooth"; }
+    Mod+Alt+S hotkey-overlay-title="Sound settings"     { spawn-sh "~/.local/bin/settings-panel sound"; }
+    Mod+Alt+D hotkey-overlay-title="Do not disturb"     { spawn-sh "~/.local/bin/dnd-toggle"; }
+    Mod+Alt+K hotkey-overlay-title="Keep awake"         { spawn-sh "~/.local/bin/keep-awake toggle"; }
+    Mod+Alt+N hotkey-overlay-title="Night light"        { spawn-sh "pkill wlsunset || wlsunset -t 4000 -T 4001"; }
+    Mod+Alt+T hotkey-overlay-title="Apps: light / dark" { spawn-sh "~/.local/bin/theme"; }
+    Mod+Alt+C hotkey-overlay-title="Clear notifications" { spawn "makoctl" "dismiss" "--all"; }
+    Mod+Alt+L hotkey-overlay-title="Lock screen"        { spawn-sh "~/.local/bin/lockscreen"; }
     Mod+Alt+V hotkey-overlay-title="Clipboard history" { spawn-sh "cliphist list | fuzzel --dmenu --prompt '󰅍  ' | cliphist decode | wl-copy"; }
-    Mod+Shift+E hotkey-overlay-title="Power menu" { spawn-sh "~/.local/bin/powermenu"; }
-    Mod+Alt+N hotkey-overlay-title="Night light" { spawn-sh "pkill wlsunset || wlsunset -t 4000 -T 4001"; }
+    Mod+Alt+P hotkey-overlay-title="Power menu"         { spawn-sh "~/.local/bin/powermenu"; }
 
     // Volume and brightness: 5% steps with a small popup
     XF86AudioRaiseVolume  allow-when-locked=true { spawn-sh "~/.local/bin/volume up"; }
     XF86AudioLowerVolume  allow-when-locked=true { spawn-sh "~/.local/bin/volume down"; }
     XF86AudioMute         allow-when-locked=true { spawn-sh "~/.local/bin/volume mute"; }
     XF86AudioMicMute      allow-when-locked=true { spawn-sh "~/.local/bin/volume mic-mute"; }
+    // Acer Aspire A514-56GM: the mic-mute key (Fn+F4) sends XF86Launch6
+    // instead of the standard XF86AudioMicMute, so it's bound here by hand.
+    XF86Launch6           allow-when-locked=true { spawn-sh "~/.local/bin/volume mic-mute"; }
     XF86MonBrightnessUp   allow-when-locked=true { spawn-sh "~/.local/bin/brightness up"; }
     XF86MonBrightnessDown allow-when-locked=true { spawn-sh "~/.local/bin/brightness down"; }
 
