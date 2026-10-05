@@ -23,6 +23,7 @@ Each folder is a [GNU Stow](https://www.gnu.org/software/stow/) package.
 | `mako` | [mako](https://github.com/emersion/mako) | Notifications + volume/brightness popup |
 | `swaylock` | [swaylock](https://github.com/swaywm/swaylock) | Lock screen over a blurred wallpaper |
 | `wlogout` | [wlogout](https://github.com/ArtsyMacaw/wlogout) | Power menu |
+| `environment` | systemd | Session-wide settings for niri and GNOME (see below) |
 | `scripts` | — | Small helper commands (see below) |
 
 **Fonts:** Adwaita Sans for interface text, JetBrainsMono Nerd Font for the
@@ -49,7 +50,7 @@ unzip it into `~/.local/share/fonts/`, then run `fc-cache -f`.
 ```sh
 git clone https://github.com/vishwajitsarnobat/dotfiles.git ~/dotfiles
 cd ~/dotfiles
-stow niri waybar fuzzel alacritty mako swaylock wlogout scripts
+stow niri waybar fuzzel alacritty mako swaylock wlogout environment scripts
 ```
 
 If a config already exists (for example `~/.config/niri`), Stow stops
@@ -137,6 +138,11 @@ All live in `scripts/.local/bin`.
 
 **Auto lock:** the screen locks after 5 minutes idle. Once locked, the
 display turns off after 15 seconds.
+
+**Faster GNOME apps:** GTK 4 apps start with Vulkan by default, which wakes
+the sleeping NVIDIA GPU and adds a few seconds to the first launch.
+`environment` sets `GSK_RENDERER=ngl` so they use OpenGL on the Intel GPU
+instead. It applies to both niri and GNOME after you log in again.
 
 ## Credits
 
