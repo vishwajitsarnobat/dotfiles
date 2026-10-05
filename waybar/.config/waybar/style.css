@@ -91,6 +91,8 @@ window#waybar {
 #custom-dnd               { color: @soft; }
 #custom-dnd.on            { color: @pink; }
 #pulseaudio   { color: @lilac; }
+#pulseaudio.mic              { color: @lilac; }
+#pulseaudio.mic.source-muted { color: @pink; }
 #network      { color: @blue; }
 #bluetooth    { color: @teal; }
 #battery      { color: @green; font-family: "Adwaita Sans", "JetBrainsMono Nerd Font"; font-size: 14px; }

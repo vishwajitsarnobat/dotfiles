@@ -10,7 +10,7 @@
 
     "modules-left":   ["niri/workspaces", "custom/media"],
     "modules-center": ["custom/clock", "niri/window"],
-    "modules-right":  ["tray", "custom/awake", "custom/dnd", "pulseaudio", "network", "bluetooth", "battery", "custom/power"],
+    "modules-right":  ["tray", "custom/awake", "custom/dnd", "pulseaudio#mic", "pulseaudio", "network", "bluetooth", "battery", "custom/power"],
 
     "custom/clock": {
         "exec": "~/.local/bin/waybar-calendar",
@@ -70,6 +70,18 @@
         "tooltip-format": "Volume {volume}%",
         "on-click": "~/.local/bin/settings-panel sound",
         "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+    },
+
+    "pulseaudio#mic": {
+        "format": "{format_source}",
+        "format-muted": "{format_source}",
+        "format-source": "󰍬",
+        "format-source-muted": "󰍭",
+        "tooltip-format": "Microphone {source_volume}%",
+        "on-click": "~/.local/bin/volume mic-mute",
+        "on-click-right": "~/.local/bin/settings-panel sound",
+        "on-scroll-up": "",
+        "on-scroll-down": ""
     },
 
     "network": {

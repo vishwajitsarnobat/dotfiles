@@ -109,10 +109,12 @@ Window, workspace and monitor keys are niri's defaults.
 | --- | --- |
 | **Left** | Workspaces · now playing (click: play/pause, right-click: next, hover: song and source) |
 | **Centre** | Date and time (hover: calendar, scroll: change month, click: back to today) · current window |
-| **Right** | Tray · keep awake · do not disturb · volume · Wi-Fi · Bluetooth · battery · power menu |
+| **Right** | Tray · keep awake · do not disturb · microphone · volume · Wi-Fi · Bluetooth · battery · power menu |
 
 Volume, Wi-Fi, Bluetooth and battery open the matching GNOME Settings page
 when clicked, and close it on a second click. Right-click volume to mute.
+Click the microphone to mute it (it turns pink); right-click for sound
+settings.
 
 ## Helper commands
 
