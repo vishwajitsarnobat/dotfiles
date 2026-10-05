@@ -108,6 +108,6 @@
     "custom/power": {
         "format": "⏻",
         "tooltip": false,
-        "on-click": "wlogout -b 5"
+        "on-click": "~/.local/bin/powermenu"
     }
 }

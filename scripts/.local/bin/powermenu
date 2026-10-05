@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+pkill -x wlogout && exit 0
+read -r W H < <(niri msg -j focused-output 2>/dev/null |
+    python3 -c 'import json,sys; o=json.load(sys.stdin)["logical"]; print(o["width"], o["height"])' 2>/dev/null)
+W=${W:-1536}; H=${H:-960}
+CARD=200                                   # card size in px
+TB=$(( (H - CARD - 20) / 2 ));  [ "$TB" -lt 0 ] && TB=0
+LR=$(( (W - 5 * (CARD + 20)) / 2 )); [ "$LR" -lt 0 ] && LR=0
+exec wlogout -b 5 -T "$TB" -B "$TB" -L "$LR" -R "$LR"
