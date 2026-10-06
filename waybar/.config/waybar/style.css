@@ -1,4 +1,4 @@
-/* Three rounded islands - GNOME-dark greys, soft pastel touches */
+/* Three rounded islands - GNOME-dark greys, one blue accent */
 @define-color fg          #f2f2f5;
 @define-color muted       #a8a8b3;
 @define-color dim         #8b8b96;
@@ -9,15 +9,9 @@
 @define-color accent      #8fb8f6;
 @define-color on_accent   #1e1e22;
 @define-color pink        #f2a1a8;
-@define-color pink_hover  #f7bcc2;
 @define-color yellow      #f3d98b;
-@define-color lilac       #c8a6f0;
-@define-color blue        #8fb8f6;
-@define-color teal        #8ed6d6;
 @define-color green       #a6dba0;
-@define-color soft        #d4d4dc;
-@define-color media_bg    rgba(200, 166, 240, 0.16);
-@define-color media_fg    #d8c0f5;
+@define-color media_bg    rgba(143, 184, 246, 0.16);
 @define-color media_idle  rgba(255, 255, 255, 0.06);
 @define-color tooltip_bg  rgba(30, 30, 34, 0.97);
 
@@ -79,45 +73,49 @@ window#waybar {
 #workspaces button.focused:hover { background: @accent; }
 #workspaces button.urgent { color: @pink; }
 
-/* Status icons - one size, each with a soft tint */
+/* Status icons - one font, one size */
 #custom-awake, #custom-dnd,
 #pulseaudio, #network, #bluetooth, #battery, #custom-power {
     font-family: "JetBrainsMono Nerd Font";
-    font-size: 17px;
+    font-size: 20px;
     padding: 0 8px;
 }
-#custom-awake             { color: @dim; }
-#custom-awake.on          { color: @yellow; }
-#custom-dnd               { color: @soft; }
-#custom-dnd.on            { color: @pink; }
-#pulseaudio   { color: @lilac; }
-#pulseaudio.mic              { color: @lilac; }
-#pulseaudio.mic.source-muted { color: @pink; }
-#network      { color: @blue; }
-#bluetooth    { color: @teal; }
-#battery      { color: @green; font-family: "Adwaita Sans", "JetBrainsMono Nerd Font"; font-size: 14px; }
-#custom-power { color: @pink; padding-right: 8px; }
+/* Two colours: blue = on, grey = off (every crossed-out icon is grey).
+   Battery and power keep their own. */
+#custom-awake.on, #custom-dnd,
+#pulseaudio, #network, #bluetooth { color: @accent; }
+#custom-awake, #custom-dnd.on     { color: @off; }
+#battery      { color: @green; font-family: "Adwaita Sans"; font-size: 14px; }
+#custom-power { color: @pink; font-size: 17px; }   /* ⏻ draws larger; 17px matches the rest */
 #tray { padding: 0 4px; }
+#tray.empty { padding: 0; }
 
-/* Now playing - always shown, lilac while something is playing */
+/* Now playing - always shown, blue while something is playing */
 #custom-media {
     padding: 0 12px;
     margin: 4px 2px 4px 8px;
     border-radius: 999px;
     background: @media_bg;
-    color: @media_fg;
+    color: @accent;
     font-weight: 500;
 }
 #custom-media.paused,
 #custom-media.idle { color: @dim; background: @media_idle; }
 
-#pulseaudio.muted,
+/* Muted, off or disconnected */
+#pulseaudio.muted:not(.mic),
+#pulseaudio.mic.source-muted,
 #network.disconnected,
 #bluetooth.off,
 #bluetooth.disabled { color: @off; }
 #battery.warning:not(.charging)  { color: @yellow; }
 #battery.critical:not(.charging) { color: @pink; }
-#custom-power:hover { color: @pink_hover; }
+
+/* Hover: a soft pill on everything clickable, like the workspace buttons */
+#custom-awake, #custom-dnd, #pulseaudio, #network, #bluetooth,
+#battery, #custom-power { border-radius: 999px; }
+#custom-awake:hover, #custom-dnd:hover, #pulseaudio:hover, #network:hover,
+#bluetooth:hover, #battery:hover, #custom-power:hover { background: @hover; }
 
 tooltip {
     background: @tooltip_bg;

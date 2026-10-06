@@ -1,6 +1,6 @@
 {
     "label" : "lock",
-    "action" : "loginctl lock-session",
+    "action" : "$HOME/.local/bin/lockscreen",
     "text" : "Lock",
     "keybind" : "l"
 }

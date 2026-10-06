@@ -114,8 +114,12 @@ Window, workspace and monitor keys are niri's defaults.
 
 Volume, Wi-Fi, Bluetooth and battery open the matching GNOME Settings page
 when clicked, and close it on a second click. Right-click volume to mute.
-Click the microphone to mute it (it turns pink); right-click for sound
-settings.
+Click the microphone to mute it; right-click for sound settings. Hover any
+icon to see what its clicks do.
+
+Icons use two colours: blue when on, grey when off. Every crossed-out icon
+(muted, disconnected, do not disturb, keep awake off) is grey. Battery is green, turning yellow and then pink when
+low, and the power button is pink.
 
 ## Helper commands
 
@@ -124,14 +128,14 @@ All live in `scripts/.local/bin`.
 | Command | What it does |
 | --- | --- |
 | `setwall <image>` | Set the wallpaper (run alone to list saved ones) |
-| `theme [light\|dark]` | Switch apps between light and dark, like GNOME's switch |
+| `theme [light\|dark]` | Switch apps between light and dark, including older GTK 3 apps |
 | `lockscreen` | Lock with a blurred copy of the wallpaper |
 | `powermenu` | Open the power menu, sized to the screen |
 | `volume`, `brightness`, `osd` | Media keys in 5% steps with a level popup |
 | `waybar-calendar`, `waybar-media` | The bar's calendar and now-playing |
 | `dnd-status`, `dnd-toggle` | Do-not-disturb button |
-| `keep-awake [toggle]` | Keep-awake button (stops and restarts `idle-watch`) |
-| `idle-watch` | Auto lock and screen-off timers |
+| `keep-awake [toggle]` | Keep-awake button: no idle lock, but still locks before sleep |
+| `idle-watch [awake]` | Auto lock and screen-off timers |
 | `settings-panel <page>` | Open or close a GNOME Settings page (`wifi`, `bluetooth`, `sound`, `power`) |
 
 **Night light** is manual: toggle it with `Mod + Alt + N`.

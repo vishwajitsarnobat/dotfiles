@@ -1,18 +1,22 @@
 #!/usr/bin/env bash
 # keep-awake          -> status for the bar
-# keep-awake toggle   -> switch on / off
+# keep-awake toggle   -> switch on / off (still locks before sleep either way)
+STATE="${XDG_RUNTIME_DIR:-/tmp}/keep-awake"
 if [ "${1:-}" = toggle ]; then
-    if pgrep -x swayidle >/dev/null; then
-        pkill -x swayidle;  msg="󰅶  Keep awake: on"
+    pkill -x swayidle
+    if [ -f "$STATE" ]; then
+        rm -f "$STATE"
+        setsid -f "$HOME/.local/bin/idle-watch" >/dev/null 2>&1;        msg="󰾪  Keep awake: off"
     else
-        setsid -f "$HOME/.local/bin/idle-watch" >/dev/null 2>&1;  msg="󰾪  Keep awake: off"
+        touch "$STATE"
+        setsid -f "$HOME/.local/bin/idle-watch" awake >/dev/null 2>&1;  msg="󰅶  Keep awake: on"
     fi
     pkill -RTMIN+10 waybar
     notify-send -a osd -u low "$msg" 2>/dev/null
     exit 0
 fi
-if pgrep -x swayidle >/dev/null; then
-    echo '{"text": "󰾪", "class": "off", "tooltip": "Screen sleeps normally - click to keep awake"}'
+if [ -f "$STATE" ]; then
+    echo '{"text": "󰅶", "class": "on", "tooltip": "Keeping the screen awake\nClick: allow sleep"}'
 else
-    echo '{"text": "󰅶", "class": "on", "tooltip": "Keeping the screen awake - click to allow sleep"}'
+    echo '{"text": "󰾪", "class": "off", "tooltip": "Screen sleeps after 15 min\nClick: keep awake"}'
 fi

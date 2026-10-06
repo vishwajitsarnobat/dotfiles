@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # theme light | theme dark | theme   (no word = flip)
 KEY="org.gnome.desktop.interface color-scheme"
+GTK3="org.gnome.desktop.interface gtk-theme"
 cur=$(gsettings get $KEY 2>/dev/null | tr -d "'")
 case "${1:-toggle}" in
     dark)   mode=dark ;;
@@ -8,9 +9,10 @@ case "${1:-toggle}" in
     toggle) if [ "$cur" = prefer-dark ]; then mode=light; else mode=dark; fi ;;
     *)      echo "Usage: theme [dark|light]"; exit 1 ;;
 esac
+# color-scheme for GTK 4 apps, gtk-theme for older GTK 3 ones (Disks, Boxes)
 if [ "$mode" = light ]; then
-    gsettings set $KEY default;     msg="󰖨  Apps: light"
+    gsettings set $KEY default;     gsettings set $GTK3 Adwaita;      msg="󰖨  Apps: light"
 else
-    gsettings set $KEY prefer-dark; msg="󰖔  Apps: dark"
+    gsettings set $KEY prefer-dark; gsettings set $GTK3 Adwaita-dark; msg="󰖔  Apps: dark"
 fi
 notify-send -a osd -u low "$msg" 2>/dev/null

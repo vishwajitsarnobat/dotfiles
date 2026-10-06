@@ -1,5 +1,4 @@
 // niri config - GNOME-dark + soft pastel accents
-// Written by setup-niri-rice.sh
 // Wiki: https://niri-wm.github.io/niri/Configuration:-Introduction
 
 input {
@@ -18,6 +17,14 @@ input {
 
 layout {
     gaps 8
+    // Negative struts trim the outer gap: 8px between windows, 4px at the
+    // screen edges and under the bar (matches Waybar's 4px side margin)
+    struts {
+        left -4
+        right -4
+        top -4
+        bottom -4
+    }
     center-focused-column "never"
 
     preset-column-widths {
@@ -86,15 +93,10 @@ window-rule {
     open-maximized-to-edges false
 }
 
-// WezTerm workaround
-window-rule {
-    match app-id=r#"^org\.wezfurlong\.wezterm$"#
-    default-column-width {}
-}
-
 // Small pop-up windows float
 window-rule {
     match app-id=r#"firefox$"# title="^Picture-in-Picture$"
+    match app-id=r#"^google-chrome$"# title="^Picture in picture$"
     match app-id=r#"^org\.gnome\.Settings$"#
     match app-id=r#"^org\.gnome\.Calculator$"#
     open-floating true

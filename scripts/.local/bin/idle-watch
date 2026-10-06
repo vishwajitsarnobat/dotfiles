@@ -1,8 +1,13 @@
 #!/usr/bin/env bash
-# Locks after 15 min idle; screen off 15 s after locking.
+# idle-watch        -> lock after 15 min idle; screen off 15 s after locking
+# idle-watch awake  -> never lock on idle, but still lock before sleep
+LOCK="$HOME/.local/bin/lockscreen"
+if [ "${1:-}" = awake ]; then
+    exec swayidle -w before-sleep "$LOCK" lock "$LOCK"
+fi
 exec swayidle -w \
     timeout 15  'pidof swaylock >/dev/null && niri msg action power-off-monitors' \
-    timeout 900 "$HOME/.local/bin/lockscreen" \
+    timeout 900 "$LOCK" \
     timeout 915 'niri msg action power-off-monitors' \
-    before-sleep "$HOME/.local/bin/lockscreen" \
-    lock "$HOME/.local/bin/lockscreen"
+    before-sleep "$LOCK" \
+    lock "$LOCK"
