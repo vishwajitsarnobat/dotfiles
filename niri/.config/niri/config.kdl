@@ -77,7 +77,8 @@ spawn-at-startup "waybar"
 spawn-at-startup "mako"
 spawn-sh-at-startup "[ -f ~/Pictures/wallpaper.jpg ] && swaybg -m fill -i ~/Pictures/wallpaper.jpg || swaybg -c 1d1d20"
 spawn-sh-at-startup "~/.local/bin/idle-watch"
-spawn-at-startup "/usr/libexec/polkit-mate-authentication-agent-1"
+// Password prompts for admin actions. Fedora/Debian path first, then Arch's.
+spawn-sh-at-startup "for p in /usr/libexec/polkit-mate-authentication-agent-1 /usr/lib/mate-polkit/polkit-mate-authentication-agent-1; do [ -x $p ] && exec $p; done"
 spawn-sh-at-startup "wl-paste --watch cliphist store"
 
 // ---------- Window rules ----------
@@ -117,6 +118,7 @@ binds {
     Mod+Alt+S hotkey-overlay-title="Sound settings"     { spawn-sh "~/.local/bin/settings-panel sound"; }
     Mod+Alt+D hotkey-overlay-title="Do not disturb"     { spawn-sh "~/.local/bin/dnd-toggle"; }
     Mod+Alt+K hotkey-overlay-title="Keep awake"         { spawn-sh "~/.local/bin/keep-awake toggle"; }
+    Mod+Alt+E hotkey-overlay-title="Power profile"      { spawn-sh "~/.local/bin/power-profile"; }
     Mod+Alt+N hotkey-overlay-title="Night light"        { spawn-sh "pkill wlsunset || wlsunset -t 4000 -T 4001"; }
     Mod+Alt+T hotkey-overlay-title="Apps: light / dark" { spawn-sh "~/.local/bin/theme"; }
     Mod+Alt+C hotkey-overlay-title="Clear notifications" { spawn "makoctl" "dismiss" "--all"; }

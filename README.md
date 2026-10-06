@@ -1,7 +1,7 @@
 # dotfiles
 
-A calm, keyboard-first [niri](https://github.com/YaLTeR/niri) desktop for
-Fedora that sits alongside GNOME instead of replacing it. Dark GNOME greys,
+A calm, keyboard-first [niri](https://github.com/YaLTeR/niri) desktop that
+sits alongside GNOME instead of replacing it. Dark GNOME greys,
 one blue accent, rounded "island" bars, and GNOME's own Settings for Wi-Fi,
 Bluetooth and sound. Style inspired by
 [saneAspect](https://www.youtube.com/@saneAspect).
@@ -19,7 +19,7 @@ Bluetooth and sound. Style inspired by
 - **Bar:** a top bar in three islands. Workspaces and now playing on the
   left, the clock and a calendar in the centre, status icons on the right.
 - **System keys:** one easy-to-remember set, `Mod + Alt + <letter>`, for
-  Wi-Fi, Bluetooth, sound, do not disturb, lock, power and more.
+  Wi-Fi, Bluetooth, sound, power profiles, do not disturb, lock and more.
 - **GNOME underneath:** no extra Wi-Fi, Bluetooth or volume apps. Clicking
   the bar opens the matching GNOME Settings page, and clicking again closes it.
 - **Matching look everywhere:** the launcher, terminal, notifications, lock
@@ -30,9 +30,10 @@ Bluetooth and sound. Style inspired by
 
 ## Before you start
 
-- **Fedora Workstation (GNOME).** Tested on Fedora 44 with niri 26.04. GNOME
-  must stay installed, because Settings, Files and the GNOME apps come from
-  it. You can still log in to plain GNOME whenever you like.
+- **Any Linux distro with GNOME.** I use and test it on Fedora 44 with niri
+  26.04, but nothing in it is Fedora-only. GNOME must stay installed, because
+  Settings, Files and the GNOME apps come from it. You can still log in to
+  plain GNOME whenever you like.
 - **A laptop is assumed.** The bar shows battery, and the brightness keys are
   bound. On a desktop, see [Hardware-specific bits](#hardware-specific-bits).
 - **Some parts are specific to my laptop**, an Acer Aspire A514-56GM with
@@ -41,7 +42,7 @@ Bluetooth and sound. Style inspired by
 
 ## Install
 
-**1. Install the packages.**
+**1. Install the packages.** On Fedora:
 
 ```sh
 sudo dnf install niri waybar fuzzel alacritty mako swaylock swayidle swaybg \
@@ -49,10 +50,28 @@ sudo dnf install niri waybar fuzzel alacritty mako swaylock swayidle swaybg \
     brightnessctl ImageMagick libnotify adwaita-sans-fonts stow git
 ```
 
+On another distro, install the same programs with its package manager.
+Names are mostly the same, with a few exceptions:
+
+| Program | What it's for | Notes |
+| --- | --- | --- |
+| `niri`, `waybar`, `fuzzel`, `alacritty`, `mako` | Window manager, bar, launcher, terminal, notifications | |
+| `swaylock`, `swayidle`, `swaybg`, `wlogout` | Lock screen, idle timers, wallpaper, power menu | `wlogout` is in the AUR on Arch |
+| `mate-polkit` | Password prompts for admin actions | Any polkit agent works; change its line in the niri config |
+| `wl-clipboard`, `cliphist` | Clipboard and clipboard history | |
+| `wlsunset` | Night light | |
+| `playerctl`, `brightnessctl` | Media keys, brightness keys | |
+| `ImageMagick`, `libnotify` | Blurred lock screen, popups | `imagemagick` on Arch and Debian |
+| Adwaita Sans font | Interface text | `adwaita-fonts` on Arch |
+| `stow`, `git` | Installing these dotfiles | |
+| `xwayland-satellite` | Older X11 apps | Usually pulled in with niri |
+| `power-profiles-daemon` or `tuned-ppd` | Power profiles | Most GNOME installs already have one |
+
 **2. Install the icon font.** Download
 [JetBrainsMono Nerd Font](https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip),
-unzip it into `~/.local/share/fonts/`, then run `fc-cache -f`. Without it,
-the bar's icons show up as empty boxes.
+unzip it into `~/.local/share/fonts/`, then run `fc-cache -f`. Some distros
+package it (`ttf-jetbrains-mono-nerd` on Arch). Without it, the bar's icons
+show up as empty boxes.
 
 **3. Link the configs.** Each folder in this repo is a
 [GNU Stow](https://www.gnu.org/software/stow/) package. Stow links its files
@@ -78,11 +97,16 @@ the screenshots is typecraft's
 [`nice-blue-background.png`](https://github.com/typecraft-dev/dotfiles/tree/master/backgrounds/.config/backgrounds).
 
 **5. Use GNOME's default apps in niri.** Without this, images and PDFs may
-open in the wrong app:
+open in the wrong app. If your distro has
+`/usr/share/applications/gnome-mimeapps.list` (Fedora does), link it for
+niri:
 
 ```sh
 sudo ln -s /usr/share/applications/gnome-mimeapps.list /usr/share/applications/niri-mimeapps.list
 ```
+
+If that file doesn't exist, skip this step and set default apps in GNOME
+Settings → Apps → Default Apps.
 
 **6. Log in.** Log out, choose **niri** on the login screen, and log in.
 Press `Mod + Shift + /` any time to see every key.
@@ -122,6 +146,7 @@ Most are toggles: press again to undo.
 | `Mod + Alt + S` | Sound settings |
 | `Mod + Alt + D` | Do not disturb |
 | `Mod + Alt + K` | Keep awake (don't lock when idle) |
+| `Mod + Alt + E` | Next power profile: power saver, balanced, performance |
 | `Mod + Alt + N` | Night light |
 | `Mod + Alt + T` | Switch apps between light and dark |
 | `Mod + Alt + C` | Clear all notifications |
@@ -149,7 +174,7 @@ clipboard.
 | --- | --- |
 | **Left** | Workspaces · now playing (click: play/pause, right-click: next) |
 | **Centre** | Date and time (hover: calendar, scroll: change month, click: back to today) · current window |
-| **Right** | Tray · keep awake · do not disturb · microphone · volume · Wi-Fi · Bluetooth · battery · power |
+| **Right** | Tray · keep awake · do not disturb · microphone · volume · Wi-Fi · Bluetooth · power profile · battery · power |
 
 Hover over any icon to see what its clicks do. The colours follow one rule:
 **blue means on, grey means off**. Every crossed-out icon (muted,
@@ -242,6 +267,7 @@ Helper commands, which you can also run yourself in a terminal:
 | `powermenu` | Open or close the power menu |
 | `volume`, `brightness` | Change volume or brightness in 5% steps and show the popup |
 | `keep-awake [toggle]` | Show or switch keep-awake |
+| `power-profile [name]` | Switch to the next power profile, or to `power-saver`, `balanced` or `performance` |
 | `dnd-toggle`, `dnd-status` | Switch or show do not disturb |
 | `settings-panel <page>` | Open or close a GNOME Settings page: `wifi`, `bluetooth`, `sound`, `power` |
 | `idle-watch [awake]` | The idle timers, started by niri at login |
@@ -254,7 +280,14 @@ Helper commands, which you can also run yourself in a terminal:
 - **`stow` reports a conflict:** you already have that config. Move it away
   and run `stow` again.
 - **Settings keys or bar clicks do nothing:** GNOME Settings
-  (`gnome-control-center`) isn't installed. It comes with Fedora Workstation.
+  (`gnome-control-center`) isn't installed. Install it with your package
+  manager; it comes with any full GNOME install.
+- **Power profile icon is missing or does nothing:** neither
+  `power-profiles-daemon` nor `tuned-ppd` is running. Install one and enable
+  its service.
+- **No password prompt when an app needs admin rights:** the polkit agent
+  didn't start. Check that `mate-polkit` is installed, or point the niri
+  config's polkit line at your distro's agent.
 - **Changes to `environment` or `idle-watch` don't apply:** both are read at
   login. Log out and back in.
 

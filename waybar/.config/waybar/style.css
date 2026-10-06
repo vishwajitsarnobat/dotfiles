@@ -74,8 +74,8 @@ window#waybar {
 #workspaces button.urgent { color: @pink; }
 
 /* Status icons - one font, one size */
-#custom-awake, #custom-dnd,
-#pulseaudio, #network, #bluetooth, #battery, #custom-power {
+#custom-awake, #custom-dnd, #pulseaudio, #network, #bluetooth,
+#power-profiles-daemon, #battery, #custom-power {
     font-family: "JetBrainsMono Nerd Font";
     font-size: 20px;
     padding: 0 8px;
@@ -83,7 +83,8 @@ window#waybar {
 /* Two colours: blue = on, grey = off (every crossed-out icon is grey).
    Battery and power keep their own. */
 #custom-awake.on, #custom-dnd,
-#pulseaudio, #network, #bluetooth { color: @accent; }
+#pulseaudio, #network, #bluetooth,
+#power-profiles-daemon            { color: @accent; }
 #custom-awake, #custom-dnd.on     { color: @off; }
 #battery      { color: @green; font-family: "Adwaita Sans"; font-size: 14px; }
 #custom-power { color: @pink; font-size: 17px; }   /* ⏻ draws larger; 17px matches the rest */
@@ -113,9 +114,10 @@ window#waybar {
 
 /* Hover: a soft pill on everything clickable, like the workspace buttons */
 #custom-awake, #custom-dnd, #pulseaudio, #network, #bluetooth,
-#battery, #custom-power { border-radius: 999px; }
+#power-profiles-daemon, #battery, #custom-power { border-radius: 999px; }
 #custom-awake:hover, #custom-dnd:hover, #pulseaudio:hover, #network:hover,
-#bluetooth:hover, #battery:hover, #custom-power:hover { background: @hover; }
+#bluetooth:hover, #power-profiles-daemon:hover, #battery:hover,
+#custom-power:hover { background: @hover; }
 
 tooltip {
     background: @tooltip_bg;

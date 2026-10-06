@@ -10,7 +10,7 @@
 
     "modules-left":   ["niri/workspaces", "custom/media"],
     "modules-center": ["custom/clock", "niri/window"],
-    "modules-right":  ["tray", "custom/awake", "custom/dnd", "pulseaudio#mic", "pulseaudio", "network", "bluetooth", "battery", "custom/power"],
+    "modules-right":  ["tray", "custom/awake", "custom/dnd", "pulseaudio#mic", "pulseaudio", "network", "bluetooth", "power-profiles-daemon", "battery", "custom/power"],
 
     "custom/clock": {
         "exec": "~/.local/bin/waybar-calendar",
@@ -107,6 +107,17 @@
         "tooltip-format": "Bluetooth {status}\nClick: Bluetooth settings",
         "tooltip-format-connected": "{device_alias}\nClick: Bluetooth settings",
         "on-click": "~/.local/bin/settings-panel bluetooth"
+    },
+
+    "power-profiles-daemon": {
+        "format": "{icon}",
+        "format-icons": {
+            "default": "󰾅",
+            "power-saver": "󰾆",
+            "balanced": "󰾅",
+            "performance": "󰓅"
+        },
+        "tooltip-format": "Power: {profile}\nClick: next profile"
     },
 
     "battery": {

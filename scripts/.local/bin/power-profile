@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# power-profile          -> next profile: power-saver -> balanced -> performance
+# power-profile <name>   -> set power-saver | balanced | performance
+DEST=org.freedesktop.UPower.PowerProfiles
+OBJ=/org/freedesktop/UPower/PowerProfiles
+cur=$(busctl get-property $DEST $OBJ $DEST ActiveProfile | cut -d'"' -f2)
+case "${1:-next}" in
+    next) case "$cur" in
+              power-saver) new=balanced ;;
+              balanced)    new=performance ;;
+              *)           new=power-saver ;;
+          esac ;;
+    power-saver|balanced|performance) new=$1 ;;
+    *) echo "Usage: power-profile [power-saver|balanced|performance]"; exit 1 ;;
+esac
+busctl set-property $DEST $OBJ $DEST ActiveProfile s "$new" || exit 1
+case "$new" in
+    power-saver) msg="󰾆  Power saver" ;;
+    balanced)    msg="󰾅  Balanced" ;;
+    performance) msg="󰓅  Performance" ;;
+esac
+notify-send -a osd -u low "$msg" 2>/dev/null
