@@ -50,6 +50,19 @@ sudo dnf install niri waybar fuzzel alacritty mako swaylock swayidle swaybg \
     brightnessctl ImageMagick libnotify adwaita-sans-fonts stow git
 ```
 
+On Arch (not tested by me, but every package is in the official repos except
+`wlogout`, which is in the AUR):
+
+```sh
+sudo pacman -S niri waybar fuzzel alacritty mako swaylock swayidle swaybg \
+    mate-polkit wl-clipboard cliphist wlsunset playerctl brightnessctl \
+    imagemagick libnotify adwaita-fonts ttf-jetbrains-mono-nerd \
+    xwayland-satellite power-profiles-daemon stow git
+yay -S wlogout    # or your AUR helper of choice
+```
+
+This also installs the icon font, so you can skip step 2.
+
 On another distro, install the same programs with its package manager.
 Names are mostly the same, with a few exceptions:
 
