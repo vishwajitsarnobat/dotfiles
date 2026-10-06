@@ -93,6 +93,15 @@ window-rule {
     open-maximized-to-edges false
 }
 
+// Big apps open full width; everything else opens at half (Mod+R cycles)
+window-rule {
+    match app-id=r#"^google-chrome$"#
+    match app-id=r#"^(firefox|org\.mozilla\.firefox)$"#
+    match app-id=r#"^code$"#
+    match app-id=r#"^[Ss]potify$"#
+    default-column-width { proportion 1.0; }
+}
+
 // Small pop-up windows float
 window-rule {
     match app-id=r#"firefox$"# title="^Picture-in-Picture$"
