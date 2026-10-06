@@ -173,7 +173,6 @@ otherwise.
 | --- | --- | --- |
 | Keys | `niri/.config/niri/config.kdl`, `binds { }` | |
 | Gaps, borders, corner radius | `niri/.config/niri/config.kdl`, `layout { }` and the first `window-rule` | The negative `struts` make the screen edges 4px while gaps between windows stay 8px |
-| Apps that open full width | `niri/.config/niri/config.kdl`, "Big apps open full width" | Everything else opens at half; find an app's ID with `niri msg windows` |
 | Apps that open floating | `niri/.config/niri/config.kdl`, "Small pop-up windows float" | Find an app's ID with `niri msg windows` |
 | Monitor layout and scaling | `niri/.config/niri/config.kdl` | Add an `output` block; run `niri msg outputs` to get names |
 | Bar icons and their order | `waybar/.config/waybar/config.jsonc`, `modules-right` | Restart the bar: `pkill waybar; waybar &` |
