@@ -136,7 +136,7 @@ All live in `scripts/.local/bin`.
 
 **Night light** is manual: toggle it with `Mod + Alt + N`.
 
-**Auto lock:** the screen locks after 5 minutes idle. Once locked, the
+**Auto lock:** the screen locks after 15 minutes idle. Once locked, the
 display turns off after 15 seconds.
 
 **Faster GNOME apps:** GTK 4 apps start with Vulkan by default, which wakes
