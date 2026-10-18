@@ -102,6 +102,7 @@ def run(name, build_card, css=b"", valign="center", top=0, on_key=None, on_scrol
 
     card_box = Gtk.EventBox(halign=Gtk.Align.CENTER, valign=getattr(Gtk.Align, valign.upper()))
     card_box.set_margin_top(top)
+    card_box.set_visible_window(False)      # don't clip the card's shadow at the box edge
     card_box.connect("button-press-event", lambda *_: True)
     if on_scroll:
         card_box.add_events(Gdk.EventMask.SCROLL_MASK | Gdk.EventMask.SMOOTH_SCROLL_MASK)
