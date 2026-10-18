@@ -237,8 +237,9 @@ and `Esc`, a click anywhere outside, the same key (or tap) again, or
 
 ### Locking and sleep
 
-- **Lock screen:** a big clock and date over your blurred wallpaper, with the
-  password field ready: just type and press `Enter`.
+- **Lock screen:** a big clock and date over your blurred wallpaper. Just start
+  typing: the password field appears with your first key already in it, then
+  press `Enter`.
 - **Auto lock:** the screen locks after 15 minutes idle, and the display
   turns off 15 seconds after that.
 - **Before sleep:** the screen always locks, even with keep-awake on.

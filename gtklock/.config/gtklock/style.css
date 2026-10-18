@@ -37,6 +37,11 @@ window.focused:not(.hidden) #date-label  { font-size: 20pt; }
     outline: none;
 }
 #input-field:focus { border-color: #8fb8f6; }
+#input-field { transition: opacity 200ms ease-out; }
+
+/* At rest (gtklock's "hidden" state) the field is invisible but still has the
+   keyboard, so the key that wakes the screen lands in it */
+window.hidden #input-field { opacity: 0; }
 
 #error-label   { color: #f2a1a8; font-weight: 600; }
 #warning-label { color: #f3d98b; font-weight: 600; }
