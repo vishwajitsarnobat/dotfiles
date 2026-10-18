@@ -39,7 +39,7 @@ window#waybar {
     padding: 0 8px;
 }
 
-#clock, #custom-clock {
+#clock {
     padding: 0 10px 0 8px;
     font-weight: 700;
 }

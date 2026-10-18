@@ -9,19 +9,14 @@
     "spacing": 0,
 
     "modules-left":   ["niri/workspaces", "custom/media"],
-    "modules-center": ["custom/clock", "niri/window"],
+    "modules-center": ["clock", "niri/window"],
     "modules-right":  ["tray", "custom/awake", "custom/dnd", "pulseaudio#mic", "pulseaudio", "network", "bluetooth", "power-profiles-daemon", "battery", "custom/power"],
 
-    "custom/clock": {
-        "exec": "~/.local/bin/waybar-calendar",
-        "return-type": "json",
+    "clock": {
+        "format": "{:%a, %d %b   %I:%M %p}",
         "interval": 10,
-        "signal": 9,
-        "tooltip": true,
-        "on-click": "~/.local/bin/waybar-calendar reset",
-        "on-scroll-up": "~/.local/bin/waybar-calendar prev",
-        "on-scroll-down": "~/.local/bin/waybar-calendar next",
-        "smooth-scrolling-threshold": 3
+        "tooltip-format": "Click: calendar",
+        "on-click": "~/.local/bin/calendar-popup"
     },
 
     "custom/media": {

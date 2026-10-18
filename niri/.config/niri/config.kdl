@@ -166,6 +166,7 @@ binds {
     Mod+Alt+T hotkey-overlay-title="Apps: light / dark" { spawn-sh "~/.local/bin/theme"; }
     Mod+Alt+C hotkey-overlay-title="Clear notifications" { spawn "makoctl" "dismiss" "--all"; }
     Mod+Alt+L hotkey-overlay-title="Lock screen"        { spawn-sh "~/.local/bin/lockscreen"; }
+    Mod+Alt+M hotkey-overlay-title="Calendar"           { spawn-sh "~/.local/bin/calendar-popup"; }
     Mod+Alt+H hotkey-overlay-title="Notification history" { spawn-sh "~/.local/bin/notif-history"; }
     Mod+Alt+R hotkey-overlay-title="OBS: start / stop recording" { spawn-sh "~/.local/bin/obs-record"; }
     Mod+Alt+V hotkey-overlay-title="Clipboard history" { spawn-sh "cliphist list | fuzzel --dmenu --prompt '󰅍  ' | cliphist decode | wl-copy"; }

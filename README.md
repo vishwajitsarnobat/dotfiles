@@ -175,6 +175,7 @@ Most are toggles: press again to undo.
 | `Mod + Alt + N` | Night light |
 | `Mod + Alt + T` | Switch apps between light and dark |
 | `Mod + Alt + C` | Clear all notifications |
+| `Mod + Alt + M` | Calendar (press again to close) |
 | `Mod + Alt + H` | Notification history (pick one to copy its text) |
 | `Mod + Alt + R` | Start or stop recording in OBS |
 | `Mod + Alt + V` | Clipboard history |
@@ -214,13 +215,20 @@ or `Ctrl + C` to copy. Either one closes the editor.
 | Island | What's there |
 | --- | --- |
 | **Left** | Workspaces · now playing (click: play/pause, right-click: next) |
-| **Centre** | Date and time (hover: calendar, scroll: change month, click: back to today) · current window |
+| **Centre** | Date and time (click: calendar) · current window |
 | **Right** | Tray · keep awake · do not disturb · microphone · volume · Wi-Fi · Bluetooth · power profile · battery · power |
 
 Hover over any icon to see what its clicks do. The colours follow one rule:
 **blue means on, grey means off**. Every crossed-out icon (muted,
 disconnected, do not disturb) is grey. Battery is green, turning yellow and
 then pink when low.
+
+### Calendar
+
+Tap the clock or press `Mod + Alt + M` to open a calendar card under it,
+and do the same again (or press `Esc`) to close it. It stays open until you do. Scroll, use the arrows, or
+press `←` / `→` to change month; the dot or `T` jumps back to today. The
+footer shows today's date and week number.
 
 ### Locking and sleep
 
@@ -262,7 +270,8 @@ otherwise.
 | Monitor layout and scaling | `niri/.config/niri/config.kdl` | Add an `output` block; run `niri msg outputs` to get names |
 | Bar icons and their order | `waybar/.config/waybar/config.jsonc`, `modules-right` | Restart the bar: `pkill waybar; waybar &` |
 | Bar colours and sizes | `waybar/.config/waybar/style.css` | Colours are defined at the top; restart the bar |
-| Clock format, week start | `scripts/.local/bin/waybar-calendar` | 12-hour clock and Sunday-first by default |
+| Bar clock format | `waybar/.config/waybar/config.jsonc`, `clock` | 12-hour by default; restart the bar |
+| Calendar look, week start | `scripts/.local/bin/calendar-popup` | Sunday-first by default (`FIRST_WEEKDAY`) |
 | Idle and lock timers | `scripts/.local/bin/idle-watch` | In seconds; log in again to apply |
 | Lock screen look, clock format | `gtklock/.config/gtklock/style.css`, `config.ini` | Takes effect the next time you lock |
 | Night light warmth | `niri/.config/niri/config.kdl`, the `Mod+Alt+N` line | `-t 4000` is the colour temperature in kelvin |
@@ -344,7 +353,8 @@ Helper commands, which you can also run yourself in a terminal:
 | `screenshot-annotate` | Select an area, then open it in swappy |
 | `idle-watch [awake]` | The idle timers, started by niri at login |
 | `battery-watch` | The low-battery warnings, started by niri at login |
-| `osd`, `lockscreen-bg`, `waybar-calendar`, `waybar-media` | Used internally by the commands above |
+| `calendar-popup` | Open or close the calendar card |
+| `osd`, `lockscreen-bg`, `waybar-media` | Used internally by the commands above |
 
 ## Troubleshooting
 
