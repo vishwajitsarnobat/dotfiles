@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Mod+Q: close an open pop-up card (calendar, shortcuts) if there is one,
+# otherwise close the focused window. Popup names match popup.py's NAMES.
+for name in calendar-popup keys-popup; do
+    pid=$(cat "${XDG_RUNTIME_DIR:-/tmp}/$name.pid" 2>/dev/null) || continue
+    if tr '\0' ' ' < "/proc/$pid/cmdline" 2>/dev/null | grep -q "$name"; then
+        kill "$pid"
+        exit 0
+    fi
+done
+exec niri msg action close-window

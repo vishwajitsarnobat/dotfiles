@@ -1,41 +1,23 @@
 #!/usr/bin/env python3
-# Calendar card under the bar's clock. Run once to open, again to close
-# (the clock's click does this). Scroll or use the arrows to change month,
-# the dot to come back to today, Esc to close.
-import calendar, datetime, os, signal, sys
+# Calendar card under the bar's clock (click the clock or Mod+Alt+C).
+# Scroll, the arrows or ←/→ change month; the dot or T jumps to today.
+# Esc, a click outside, the same key or Mod+Q closes it (see popup.py).
+import calendar, datetime, os, sys
 
-PIDFILE = os.path.join(os.environ.get("XDG_RUNTIME_DIR", "/tmp"), "calendar-popup.pid")
+sys.path.insert(0, os.path.expanduser("~/.local/lib/dotfiles"))
+import popup
 
-# Toggle: if a calendar is already open, close it and stop
-try:
-    pid = int(open(PIDFILE).read())
-    if b"calendar-popup" in open(f"/proc/{pid}/cmdline", "rb").read():   # not a reused pid
-        os.kill(pid, signal.SIGTERM)
-        sys.exit(0)
-except (OSError, ValueError):
-    pass
-open(PIDFILE, "w").write(str(os.getpid()))
+popup.claim("calendar-popup")
 
 import gi
 gi.require_version("Gtk", "3.0")
-gi.require_version("Gdk", "3.0")
-gi.require_version("GtkLayerShell", "0.1")
-from gi.repository import Gdk, GLib, Gtk, GtkLayerShell
+from gi.repository import Gtk
 
 TOP_GAP = 40            # bar height + margins, so the card sits just below it
-FIRST_WEEKDAY = 6       # Sunday first, like the bar's old calendar
+FIRST_WEEKDAY = 6       # Sunday first
 
 CSS = b"""
-* { font-family: "Adwaita Sans"; }
-window { background: transparent; }
-#card {
-    background: rgba(30, 30, 34, 0.97);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 20px;
-    padding: 18px 18px 14px 18px;
-    margin: 6px 12px 16px 12px;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
-}
+#card { padding: 18px 18px 14px 18px; margin: 6px 12px 16px 12px; }
 #month { font-size: 17pt; font-weight: 700; color: #f2f2f5; }
 #year  { font-size: 17pt; font-weight: 600; color: #8fb8f6; }
 .nav {
@@ -59,27 +41,15 @@ window { background: transparent; }
 """
 
 
-class CalendarCard(Gtk.Window):
+class Calendar:
     def __init__(self):
-        super().__init__()
-        GtkLayerShell.init_for_window(self)
-        GtkLayerShell.set_namespace(self, "calendar-popup")
-        GtkLayerShell.set_layer(self, GtkLayerShell.Layer.OVERLAY)
-        GtkLayerShell.set_anchor(self, GtkLayerShell.Edge.TOP, True)
-        GtkLayerShell.set_margin(self, GtkLayerShell.Edge.TOP, TOP_GAP)
-        GtkLayerShell.set_keyboard_mode(self, GtkLayerShell.KeyboardMode.ON_DEMAND)
-
-        screen = Gdk.Screen.get_default()
-        self.set_visual(screen.get_rgba_visual())
-        provider = Gtk.CssProvider()
-        provider.load_from_data(CSS)
-        Gtk.StyleContext.add_provider_for_screen(screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
-
         today = datetime.date.today()
         self.year, self.month = today.year, today.month
+        self.scroll_acc = 0.0
 
+    def build(self):
+        today = datetime.date.today()
         card = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12, name="card")
-        self.add(card)
 
         header = Gtk.Box(spacing=8)
         self.month_label = Gtk.Label(name="month", xalign=0)
@@ -103,12 +73,8 @@ class CalendarCard(Gtk.Window):
                         False, False, 0)
         card.pack_start(footer, False, False, 2)
 
-        self.add_events(Gdk.EventMask.SCROLL_MASK | Gdk.EventMask.SMOOTH_SCROLL_MASK)
-        self.connect("scroll-event", self.on_scroll)
-        self.connect("key-press-event", self.on_key)
-        self.connect("destroy", self.quit)
-        self.scroll_acc = 0.0
         self.draw_month()
+        return card
 
     def change(self, step):
         if step == 0:
@@ -125,7 +91,6 @@ class CalendarCard(Gtk.Window):
         self.month_label.set_text(calendar.month_name[self.month])
         self.year_label.set_text(str(self.year))
 
-        cal = calendar.Calendar(firstweekday=FIRST_WEEKDAY)
         names = [calendar.day_abbr[(FIRST_WEEKDAY + i) % 7][:2] for i in range(7)]
         for col, name in enumerate(names):
             lbl = Gtk.Label(label=name)
@@ -133,7 +98,7 @@ class CalendarCard(Gtk.Window):
             self.grid.attach(lbl, col, 0, 1, 1)
 
         today = datetime.date.today()
-        weeks = cal.monthdatescalendar(self.year, self.month)
+        weeks = calendar.Calendar(firstweekday=FIRST_WEEKDAY).monthdatescalendar(self.year, self.month)
         while len(weeks) < 6:                     # always 6 rows, so the card never jumps
             last = weeks[-1][-1]
             weeks.append([last + datetime.timedelta(days=i + 1) for i in range(7)])
@@ -153,7 +118,7 @@ class CalendarCard(Gtk.Window):
                 self.grid.attach(box, col, row, 1, 1)
         self.grid.show_all()
 
-    def on_scroll(self, _w, event):
+    def on_scroll(self, event, Gdk):
         if event.direction == Gdk.ScrollDirection.SMOOTH:
             self.scroll_acc += event.delta_y
             if abs(self.scroll_acc) >= 1:
@@ -163,35 +128,16 @@ class CalendarCard(Gtk.Window):
             self.change(1)
         elif event.direction in (Gdk.ScrollDirection.UP, Gdk.ScrollDirection.LEFT):
             self.change(-1)
-        return True
 
-    def on_key(self, _w, event):
-        key = Gdk.keyval_name(event.keyval)
-        if key == "Escape":
-            self.quit()
-        elif key in ("Right", "Down", "l", "j", "Page_Down"):
+    def on_key(self, key):
+        if key in ("Right", "Down", "l", "j", "Page_Down"):
             self.change(1)
         elif key in ("Left", "Up", "h", "k", "Page_Up"):
             self.change(-1)
         elif key in ("t", "Home"):
             self.change(0)
-        return True
-
-    def quit(self, *_):
-        try:
-            os.remove(PIDFILE)
-        except OSError:
-            pass
-        Gtk.main_quit()
-        return False
 
 
-win = CalendarCard()
-try:
-    gi.require_version("GLibUnix", "2.0")
-    from gi.repository import GLibUnix
-    GLibUnix.signal_add(GLib.PRIORITY_DEFAULT, signal.SIGTERM, win.quit)
-except (ImportError, ValueError):                      # older GLib
-    GLib.unix_signal_add(GLib.PRIORITY_DEFAULT, signal.SIGTERM, win.quit)
-win.show_all()
-Gtk.main()
+cal = Calendar()
+popup.run("calendar-popup", cal.build, CSS, valign="start", top=TOP_GAP,
+          on_key=cal.on_key, on_scroll=cal.on_scroll)

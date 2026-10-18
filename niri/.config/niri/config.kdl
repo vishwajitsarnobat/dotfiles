@@ -146,7 +146,9 @@ window-rule {
 
 // ---------- Keys ----------
 binds {
-    Mod+Shift+Slash { show-hotkey-overlay; }
+    // Key list: our own card (keys-popup) instead of niri's plain overlay.
+    // It reads the hotkey-overlay-title names below, so keep those up to date.
+    Mod+Shift+Slash { spawn-sh "~/.local/bin/keys-popup"; }
 
     // Apps
     Mod+T hotkey-overlay-title="Terminal: alacritty" { spawn "alacritty"; }
@@ -164,9 +166,8 @@ binds {
     Mod+Alt+E hotkey-overlay-title="Power profile"      { spawn-sh "~/.local/bin/power-profile"; }
     Mod+Alt+N hotkey-overlay-title="Night light"        { spawn-sh "pkill wlsunset || wlsunset -t 4000 -T 4001"; }
     Mod+Alt+T hotkey-overlay-title="Apps: light / dark" { spawn-sh "~/.local/bin/theme"; }
-    Mod+Alt+C hotkey-overlay-title="Clear notifications" { spawn "makoctl" "dismiss" "--all"; }
     Mod+Alt+L hotkey-overlay-title="Lock screen"        { spawn-sh "~/.local/bin/lockscreen"; }
-    Mod+Alt+M hotkey-overlay-title="Calendar"           { spawn-sh "~/.local/bin/calendar-popup"; }
+    Mod+Alt+C hotkey-overlay-title="Calendar"           { spawn-sh "~/.local/bin/calendar-popup"; }
     Mod+Alt+H hotkey-overlay-title="Notification history" { spawn-sh "~/.local/bin/notif-history"; }
     Mod+Alt+R hotkey-overlay-title="OBS: start / stop recording" { spawn-sh "~/.local/bin/obs-record"; }
     Mod+Alt+V hotkey-overlay-title="Clipboard history" { spawn-sh "cliphist list | fuzzel --dmenu --prompt '󰅍  ' | cliphist decode | wl-copy"; }
@@ -191,7 +192,8 @@ binds {
 
     // Windows
     Mod+O repeat=false { toggle-overview; }
-    Mod+Q repeat=false { close-window; }
+    // Closes an open pop-up card first (calendar, shortcuts), else the window
+    Mod+Q repeat=false { spawn-sh "~/.local/bin/close-focused"; }
 
     Mod+Left  { focus-column-left; }
     Mod+Down  { focus-window-down; }

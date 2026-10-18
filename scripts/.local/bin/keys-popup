@@ -1,0 +1,164 @@
+#!/usr/bin/env python3
+# Keyboard shortcuts card (Mod+Shift+/).
+# Keys with a hotkey-overlay-title in the niri config are listed
+# automatically; niri's own window and workspace keys come from the short
+# list below and only show if they're bound.
+# Esc, a click outside, the same key or Mod+Q closes it (see popup.py).
+import os, re, sys
+
+sys.path.insert(0, os.path.expanduser("~/.local/lib/dotfiles"))
+import popup
+
+popup.claim("keys-popup")
+
+CONFIG = os.path.expanduser("~/.config/niri/config.kdl")
+
+import gi
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk
+
+# niri's built-in keys worth knowing: (keys, description, action that must be bound)
+WINDOWS = [
+    ("Mod+Q", "Close window", "close-window"),
+    ("Mod+Left/Right", "Focus column left / right", "focus-column-left"),
+    ("Mod+Up/Down", "Focus window up / down", "focus-window-up"),
+    ("Mod+Ctrl+Left/Right", "Move column left / right", "move-column-left"),
+    ("Mod+Ctrl+Up/Down", "Move window up / down", "move-window-up"),
+    ("Mod+R", "Cycle column width", "switch-preset-column-width"),
+    ("Mod+F", "Full-width column", "maximize-column"),
+    ("Mod+Shift+F", "Fullscreen", "fullscreen-window"),
+    ("Mod+C", "Centre column", "center-column"),
+    ("Mod+V", "Float / tile window", "toggle-window-floating"),
+    ("Mod+W", "Tabbed column", "toggle-column-tabbed-display"),
+    ("Mod+[/]", "Pull window into / out of column", "consume-or-expel-window-left"),
+    ("Mod+O", "Overview", "toggle-overview"),
+]
+WORKSPACES = [
+    ("Mod+1…9", "Go to workspace", "focus-workspace 1"),
+    ("Mod+Ctrl+1…9", "Move column to workspace", "move-column-to-workspace 1"),
+    ("Mod+U/I", "Workspace down / up", "focus-workspace-down"),
+    ("Mod+Ctrl+U/I", "Move column down / up", "move-column-to-workspace-down"),
+]
+MEDIA = [
+    ("Volume keys", "Volume, 5% steps", "volume up"),
+    ("Brightness keys", "Brightness, 5% steps", "brightness up"),
+    ("Mic-mute key", "Microphone on / off", "volume mic-mute"),
+]
+SESSION = [
+    ("Mod+Shift+/", "This list", "keys-popup"),
+    ("Mod+Shift+P", "Turn off the screen", "power-off-monitors"),
+    ("Ctrl+Alt+Delete", "Exit niri", "quit"),
+]
+
+CSS = b"""
+#card { padding: 22px 26px 18px 26px; margin: 16px; }
+#title    { font-size: 17pt; font-weight: 700; color: #f2f2f5; }
+#subtitle { font-size: 10.5pt; font-weight: 500; color: #6b6b76; }
+.section  { font-size: 9.5pt; font-weight: 800; color: #8fb8f6; letter-spacing: 1px; }
+.desc     { font-size: 11pt; font-weight: 500; color: #d4d4dc; }
+.keycap {
+    font-size: 9.5pt; font-weight: 700; color: #f2f2f5;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-bottom: 2px solid rgba(0, 0, 0, 0.45);
+    border-radius: 6px;
+    padding: 1px 7px;
+    min-width: 12px;
+}
+.or { font-size: 9.5pt; color: #6b6b76; }
+"""
+
+KEY_NAMES = {"Mod": "Super", "Grave": "`", "Slash": "/", "Print": "PrtSc", "Left": "←",
+             "Right": "→", "Up": "↑", "Down": "↓", "Left/Right": "← →", "Up/Down": "↑ ↓",
+             "BracketLeft": "[", "BracketRight": "]", "Page_Down": "PgDn", "Page_Up": "PgUp"}
+
+
+def read_config():
+    try:
+        return open(CONFIG).read()
+    except OSError:
+        return ""
+
+
+def titled_binds(text):
+    """(keys, title) for every bind with a hotkey-overlay-title."""
+    out = []
+    for m in re.finditer(r'^\s*([A-Za-z0-9_+]+)\s[^\n]*hotkey-overlay-title="([^"]+)"', text, re.M):
+        out.append((m.group(1), m.group(2)))
+    return out
+
+
+def keycaps(keys):
+    box = Gtk.Box(spacing=4)
+    if " " in keys and "+" not in keys:            # plain words like "Volume keys"
+        parts = [keys]
+    else:
+        parts = keys.split("+")
+    for part in parts:
+        for i, alt in enumerate(part.split("|")):
+            if i:
+                lbl = Gtk.Label(label="or")
+                lbl.get_style_context().add_class("or")
+                box.pack_start(lbl, False, False, 0)
+            name = KEY_NAMES.get(alt, alt.upper() if len(alt) == 1 else alt)
+            cap = Gtk.Label(label=name)
+            cap.get_style_context().add_class("keycap")
+            box.pack_start(cap, False, False, 0)
+    return box
+
+
+def section(title, rows):
+    grid = Gtk.Grid(row_spacing=7, column_spacing=16)
+    head = Gtk.Label(label=title.upper(), xalign=0)
+    head.get_style_context().add_class("section")
+    grid.attach(head, 0, 0, 2, 1)
+    for r, (keys, desc) in enumerate(rows, start=1):
+        grid.attach(keycaps(keys), 0, r, 1, 1)
+        d = Gtk.Label(label=desc, xalign=0)
+        d.get_style_context().add_class("desc")
+        grid.attach(d, 1, r, 1, 1)
+    return grid
+
+
+def build_sections():
+    text = read_config()
+    apps, system, shots = [], [], []
+    for keys, title in titled_binds(text):
+        if "Print" in keys:
+            shots.append((keys, title.replace("Screenshot: ", "").capitalize()))
+        elif keys.startswith("Mod+Alt+"):
+            system.append((keys, title))
+        else:
+            apps.append((keys, title.split(":")[0]))
+
+    def bound(rows):
+        return [(k, d) for k, d, action in rows if action in text]
+
+    return [
+        [("Apps", apps), ("Windows", bound(WINDOWS))],
+        [("Workspaces", bound(WORKSPACES)), ("Screenshots", shots),
+         ("Media keys", bound(MEDIA)), ("Session", bound(SESSION))],
+        [("System", system)],
+    ]
+
+
+def build_card():
+    card = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=18, name="card")
+    head = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+    head.pack_start(Gtk.Label(label="Keyboard shortcuts", name="title", xalign=0), False, False, 0)
+    head.pack_start(Gtk.Label(label="Super is the Windows key  ·  Esc or a click outside to close",
+                              name="subtitle", xalign=0), False, False, 0)
+    card.pack_start(head, False, False, 0)
+
+    cols = Gtk.Box(spacing=44)
+    for column in build_sections():
+        col = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
+        for title, rows in column:
+            if rows:
+                col.pack_start(section(title, rows), False, False, 0)
+        cols.pack_start(col, False, False, 0)
+    card.pack_start(cols, False, False, 0)
+    return card
+
+
+popup.run("keys-popup", build_card, CSS, valign="center")

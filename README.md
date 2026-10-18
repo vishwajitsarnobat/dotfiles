@@ -8,9 +8,9 @@ Bluetooth and sound. Style inspired by
 
 | | |
 | --- | --- |
-| ![Desktop](screenshots/desktop.png) | ![Fastfetch](screenshots/fastfetch.png) |
-| ![Launcher](screenshots/launcher.png) | ![Calendar](screenshots/calendar.png) |
-| ![Notification](screenshots/notification.png) | ![Power menu](screenshots/powermenu.png) |
+| ![Desktop with the calendar open](screenshots/desktop.png) | ![Fastfetch](screenshots/fastfetch.png) |
+| ![Launcher](screenshots/launcher.png) | ![Notification](screenshots/notification.png) |
+| ![Power menu](screenshots/powermenu.png) | |
 
 ## What you get
 
@@ -132,7 +132,8 @@ If that file doesn't exist, skip this step and set default apps in GNOME
 Settings → Apps → Default Apps.
 
 **6. Log in.** Log out, choose **niri** on the login screen, and log in.
-Press `Mod + Shift + /` any time to see every key.
+Press `Mod + Shift + /` any time for a card with every key, grouped by what
+it does.
 
 ## Everyday use
 
@@ -147,7 +148,7 @@ Press `Mod + Shift + /` any time to see every key.
 | `Mod + E` | Files |
 | ``Mod + ` `` | Drop-down terminal: show, or hide if it's in front |
 | `Mod + Tab` | Switch window: type to search, `Enter` to jump. The window you were just on is first |
-| `Mod + Q` | Close window |
+| `Mod + Q` | Close window (or an open calendar / shortcuts card) |
 | `Mod + Left / Right` (or `H / L`) | Move between columns |
 | `Mod + Up / Down` (or `K / J`) | Move between windows in a column |
 | `Mod + 1 … 9` | Go to a workspace |
@@ -155,7 +156,7 @@ Press `Mod + Shift + /` any time to see every key.
 | `Mod + R` | Cycle the window width: ⅓, ½, ⅔ |
 | `Mod + F` | Make the column full width |
 | `Mod + O` | Overview of all windows |
-| `Mod + Shift + /` | Show all keys |
+| `Mod + Shift + /` | Keyboard shortcuts card |
 
 The window, workspace and monitor keys are niri's defaults, so niri's own
 documentation applies.
@@ -174,8 +175,7 @@ Most are toggles: press again to undo.
 | `Mod + Alt + E` | Next power profile: power saver, balanced, performance |
 | `Mod + Alt + N` | Night light |
 | `Mod + Alt + T` | Switch apps between light and dark |
-| `Mod + Alt + C` | Clear all notifications |
-| `Mod + Alt + M` | Calendar (press again to close) |
+| `Mod + Alt + C` | Calendar (press again to close) |
 | `Mod + Alt + H` | Notification history (pick one to copy its text) |
 | `Mod + Alt + R` | Start or stop recording in OBS |
 | `Mod + Alt + V` | Clipboard history |
@@ -223,12 +223,17 @@ Hover over any icon to see what its clicks do. The colours follow one rule:
 disconnected, do not disturb) is grey. Battery is green, turning yellow and
 then pink when low.
 
-### Calendar
+### Calendar and shortcuts cards
 
-Tap the clock or press `Mod + Alt + M` to open a calendar card under it,
-and do the same again (or press `Esc`) to close it. It stays open until you do. Scroll, use the arrows, or
-press `←` / `→` to change month; the dot or `T` jumps back to today. The
-footer shows today's date and week number.
+Tap the clock or press `Mod + Alt + C` for a calendar card under the bar.
+Scroll, use the arrows, or press `←` / `→` to change month; the dot or `T`
+jumps back to today. The footer shows today's date and week number.
+
+`Mod + Shift + /` opens a card with every key, grouped by what it does.
+
+Both work like GNOME's menus: they take the keyboard as soon as they open,
+and `Esc`, a click anywhere outside, the same key (or tap) again, or
+`Mod + Q` closes them. Only one is open at a time.
 
 ### Locking and sleep
 
@@ -264,7 +269,7 @@ otherwise.
 
 | To change | Edit | Notes |
 | --- | --- | --- |
-| Keys | `niri/.config/niri/config.kdl`, `binds { }` | |
+| Keys | `niri/.config/niri/config.kdl`, `binds { }` | Give a new key a `hotkey-overlay-title="…"` and it shows up in the shortcuts card by itself |
 | Gaps, borders, corner radius | `niri/.config/niri/config.kdl`, `layout { }` and the first `window-rule` | The negative `struts` make the screen edges 4px while gaps between windows stay 8px |
 | Apps that open floating | `niri/.config/niri/config.kdl`, "Small pop-up windows float" | Find an app's ID with `niri msg windows` |
 | Monitor layout and scaling | `niri/.config/niri/config.kdl` | Add an `output` block; run `niri msg outputs` to get names |
@@ -331,7 +336,7 @@ Also update the `rgba(143, 184, 246, …)` line in
 | `gtklock` | [gtklock](https://github.com/jovanlanik/gtklock) | Lock screen: a big clock and date over a blurred copy of the wallpaper |
 | `wlogout` | [wlogout](https://github.com/ArtsyMacaw/wlogout) | Power menu |
 | `environment` | systemd | Session-wide settings for both niri and GNOME |
-| `scripts` | — | The helper commands below, in `~/.local/bin` |
+| `scripts` | — | The helper commands below, in `~/.local/bin`, plus `popup.py` in `~/.local/lib/dotfiles`, shared by the two cards |
 
 Helper commands, which you can also run yourself in a terminal:
 
@@ -354,6 +359,8 @@ Helper commands, which you can also run yourself in a terminal:
 | `idle-watch [awake]` | The idle timers, started by niri at login |
 | `battery-watch` | The low-battery warnings, started by niri at login |
 | `calendar-popup` | Open or close the calendar card |
+| `keys-popup` | Open or close the keyboard shortcuts card |
+| `close-focused` | `Mod + Q`: close an open card, otherwise the focused window |
 | `osd`, `lockscreen-bg`, `waybar-media` | Used internally by the commands above |
 
 ## Troubleshooting
