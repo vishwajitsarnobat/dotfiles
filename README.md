@@ -10,7 +10,7 @@ Bluetooth and sound. Style inspired by
 | --- | --- |
 | ![Desktop with the calendar open](screenshots/desktop.png) | ![Fastfetch](screenshots/fastfetch.png) |
 | ![Launcher](screenshots/launcher.png) | ![Notification](screenshots/notification.png) |
-| ![Power menu](screenshots/powermenu.png) | |
+| ![Power menu](screenshots/powermenu.png) | ![Keyboard shortcuts](screenshots/shortcuts.png) |
 
 ## What you get
 
