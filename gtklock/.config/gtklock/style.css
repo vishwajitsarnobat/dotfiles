@@ -19,9 +19,9 @@ window {
     color: #d4d4dc;
     text-shadow: 0 1px 8px rgba(0, 0, 0, 0.35);
 }
-/* Smaller clock while the password field is showing */
-window.focused:not(.hidden) #clock-label { font-size: 80pt; }
-window.focused:not(.hidden) #date-label  { font-size: 16pt; }
+/* gtklock shrinks the clock while the password field shows; keep it full size */
+window.focused:not(.hidden) #clock-label { font-size: 120pt; }
+window.focused:not(.hidden) #date-label  { font-size: 20pt; }
 
 #input-field {
     font-family: "Adwaita Sans";

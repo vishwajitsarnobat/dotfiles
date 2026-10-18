@@ -103,7 +103,7 @@ into your home folder, so editing the repo edits your live config.
 git clone https://github.com/vishwajitsarnobat/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 stow niri waybar fuzzel alacritty mako gtklock wlogout swappy fastfetch \
-    environment scripts
+    applications environment scripts
 ```
 
 If you already have one of these configs (for example `~/.config/niri`),
@@ -237,8 +237,8 @@ and `Esc`, a click anywhere outside, the same key (or tap) again, or
 
 ### Locking and sleep
 
-- **Lock screen:** a big clock and date over your blurred wallpaper. Start
-  typing and a password field appears; press `Enter` to unlock.
+- **Lock screen:** a big clock and date over your blurred wallpaper, with the
+  password field ready: just type and press `Enter`.
 - **Auto lock:** the screen locks after 15 minutes idle, and the display
   turns off 15 seconds after that.
 - **Before sleep:** the screen always locks, even with keep-awake on.
@@ -335,6 +335,7 @@ Also update the `rgba(143, 184, 246, …)` line in
 | `mako` | [mako](https://github.com/emersion/mako) | Notifications, the level popup, do not disturb |
 | `gtklock` | [gtklock](https://github.com/jovanlanik/gtklock) | Lock screen: a big clock and date over a blurred copy of the wallpaper |
 | `wlogout` | [wlogout](https://github.com/ArtsyMacaw/wlogout) | Power menu |
+| `applications` | — | Makes GNOME Settings open from the launcher in niri (it normally refuses to start outside GNOME) |
 | `environment` | systemd | Session-wide settings for both niri and GNOME |
 | `scripts` | — | The helper commands below, in `~/.local/bin`, plus `popup.py` in `~/.local/lib/dotfiles`, shared by the two cards |
 
@@ -392,7 +393,7 @@ Helper commands, which you can also run yourself in a terminal:
 ```sh
 cd ~/dotfiles
 stow -D niri waybar fuzzel alacritty mako gtklock wlogout swappy fastfetch \
-    environment scripts
+    applications environment scripts
 ```
 
 This removes only the links. Your own files, wallpapers and screenshots stay.
