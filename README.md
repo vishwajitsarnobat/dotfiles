@@ -24,9 +24,12 @@ Bluetooth and sound. Style inspired by
   the bar opens the matching GNOME Settings page, and clicking again closes it.
 - **Matching look everywhere:** the launcher, terminal, notifications, lock
   screen and power menu all use the same colours.
-- **Small touches:** a volume and brightness popup, clipboard history, night
-  light, keep-awake, do not disturb, and one key to switch apps between light
-  and dark.
+- **Quick tools:** a drop-down terminal, a window switcher, clipboard and
+  notification history, screenshot annotation, and a key to start or stop an
+  OBS recording.
+- **Small touches:** a volume and brightness popup, a low-battery warning,
+  night light, keep-awake, do not disturb, and one key to switch apps between
+  light and dark.
 
 ## Before you start
 
@@ -45,20 +48,22 @@ Bluetooth and sound. Style inspired by
 **1. Install the packages.** On Fedora:
 
 ```sh
-sudo dnf install niri waybar fuzzel alacritty mako swaylock swayidle swaybg \
+sudo dnf install niri waybar fuzzel alacritty mako gtklock swayidle swaybg \
     wlogout mate-polkit wl-clipboard cliphist wlsunset playerctl \
-    brightnessctl ImageMagick libnotify adwaita-sans-fonts stow git
+    brightnessctl ImageMagick libnotify adwaita-sans-fonts tmux swappy \
+    fastfetch stow git
 ```
 
-On Arch (not tested by me, but every package is in the official repos except
-`wlogout`, which is in the AUR):
+On Arch (not tested by me). `gtklock` and `wlogout` go through an AUR helper
+such as `yay`, which also installs them from the official repos if they're
+there:
 
 ```sh
-sudo pacman -S niri waybar fuzzel alacritty mako swaylock swayidle swaybg \
+sudo pacman -S niri waybar fuzzel alacritty mako swayidle swaybg \
     mate-polkit wl-clipboard cliphist wlsunset playerctl brightnessctl \
     imagemagick libnotify adwaita-fonts ttf-jetbrains-mono-nerd \
-    xwayland-satellite power-profiles-daemon stow git
-yay -S wlogout    # or your AUR helper of choice
+    xwayland-satellite power-profiles-daemon tmux swappy fastfetch stow git
+yay -S gtklock wlogout    # or your AUR helper of choice
 ```
 
 This also installs the icon font, so you can skip step 2.
@@ -69,13 +74,17 @@ Names are mostly the same, with a few exceptions:
 | Program | What it's for | Notes |
 | --- | --- | --- |
 | `niri`, `waybar`, `fuzzel`, `alacritty`, `mako` | Window manager, bar, launcher, terminal, notifications | |
-| `swaylock`, `swayidle`, `swaybg`, `wlogout` | Lock screen, idle timers, wallpaper, power menu | `wlogout` is in the AUR on Arch |
+| `gtklock`, `swayidle`, `swaybg`, `wlogout` | Lock screen, idle timers, wallpaper, power menu | Install `gtklock` and `wlogout` with your AUR helper on Arch |
 | `mate-polkit` | Password prompts for admin actions | Any polkit agent works; change its line in the niri config |
 | `wl-clipboard`, `cliphist` | Clipboard and clipboard history | |
 | `wlsunset` | Night light | |
 | `playerctl`, `brightnessctl` | Media keys, brightness keys | |
 | `ImageMagick`, `libnotify` | Blurred lock screen, popups | `imagemagick` on Arch and Debian |
 | Adwaita Sans font | Interface text | `adwaita-fonts` on Arch |
+| `tmux` | Keeps the drop-down terminal's session alive while hidden | |
+| `swappy` | Annotating screenshots | Optional |
+| `fastfetch` | System info in the terminal | Optional |
+| `obs-studio` | Screen recording with `Mod + Alt + R` | Optional |
 | `stow`, `git` | Installing these dotfiles | |
 | `xwayland-satellite` | Older X11 apps | Usually pulled in with niri |
 | `power-profiles-daemon` or `tuned-ppd` | Power profiles | Most GNOME installs already have one |
@@ -93,7 +102,8 @@ into your home folder, so editing the repo edits your live config.
 ```sh
 git clone https://github.com/vishwajitsarnobat/dotfiles.git ~/dotfiles
 cd ~/dotfiles
-stow niri waybar fuzzel alacritty mako swaylock wlogout environment scripts
+stow niri waybar fuzzel alacritty mako gtklock wlogout swappy fastfetch \
+    environment scripts
 ```
 
 If you already have one of these configs (for example `~/.config/niri`),
@@ -135,6 +145,8 @@ Press `Mod + Shift + /` any time to see every key.
 | `Mod + T` | Terminal |
 | `Mod + D` | App launcher |
 | `Mod + E` | Files |
+| ``Mod + ` `` | Drop-down terminal: show, or hide if it's in front |
+| `Mod + Tab` | Switch window: type to search, `Enter` to jump. The window you were just on is first |
 | `Mod + Q` | Close window |
 | `Mod + Left / Right` (or `H / L`) | Move between columns |
 | `Mod + Up / Down` (or `K / J`) | Move between windows in a column |
@@ -163,6 +175,8 @@ Most are toggles: press again to undo.
 | `Mod + Alt + N` | Night light |
 | `Mod + Alt + T` | Switch apps between light and dark |
 | `Mod + Alt + C` | Clear all notifications |
+| `Mod + Alt + H` | Notification history (pick one to copy its text) |
+| `Mod + Alt + R` | Start or stop recording in OBS |
 | `Mod + Alt + V` | Clipboard history |
 | `Mod + Alt + L` | Lock screen |
 | `Mod + Alt + P` | Power menu |
@@ -172,14 +186,28 @@ screen, and show a small level popup.
 
 ### Screenshots
 
+Every screenshot is saved to `~/Pictures/Screenshots/` and copied to the
+clipboard, ready to paste.
+
 | Key | Action |
 | --- | --- |
-| `Print` | Select an area, then press `Space` to save |
-| `Ctrl + Print` | Whole screen |
-| `Alt + Print` | Focused window |
+| `Print` | Select an area |
+| `Shift + Print` | Select an area, then annotate it |
+| `Ctrl + Print` | Whole screen, instantly |
+| `Alt + Print` | Focused window, instantly |
 
-Screenshots go to `~/Pictures/Screenshots/` and are also copied to the
-clipboard.
+**While selecting an area** (`Print` or `Shift + Print`):
+
+| Key | Action |
+| --- | --- |
+| Drag with the mouse | Draw the selection; drag its edges to adjust |
+| `Space` | Take the screenshot |
+| `P` | Show or hide the mouse pointer in it |
+| `Esc` | Cancel |
+
+**Annotating** opens the selection in swappy. Pick a tool from its toolbar
+(arrow, rectangle, text, highlighter, blur), then press `Ctrl + S` to save
+or `Ctrl + C` to copy. Either one closes the editor.
 
 ### The bar
 
@@ -196,11 +224,30 @@ then pink when low.
 
 ### Locking and sleep
 
+- **Lock screen:** a big clock and date over your blurred wallpaper. Start
+  typing and a password field appears; press `Enter` to unlock.
 - **Auto lock:** the screen locks after 15 minutes idle, and the display
   turns off 15 seconds after that.
 - **Before sleep:** the screen always locks, even with keep-awake on.
 - **Keep awake:** turns off the idle lock until you turn it back off, for
   example while watching a video.
+- **Low battery:** a notification at 15%, and a second one at 5% that stays
+  up, even with do not disturb on.
+
+### Drop-down terminal
+
+`` Mod + ` `` brings up a floating terminal near the top of the screen, over
+whatever you're doing, without changing your layout. Press it again to hide
+it. Hiding doesn't end anything: the shell keeps running in tmux, so the next
+time you open it, your commands and their output are still there.
+
+### Recording with OBS
+
+`Mod + Alt + R` starts OBS in the tray and begins recording if OBS isn't
+running. If it is, the key starts or stops recording. For the second case,
+turn on OBS's remote control once: in OBS, open **Tools → WebSocket Server
+Settings** and tick **Enable WebSocket server**. The key reads the password
+from OBS's own settings, so there's nothing to copy.
 
 ## Make it yours
 
@@ -217,8 +264,13 @@ otherwise.
 | Bar colours and sizes | `waybar/.config/waybar/style.css` | Colours are defined at the top; restart the bar |
 | Clock format, week start | `scripts/.local/bin/waybar-calendar` | 12-hour clock and Sunday-first by default |
 | Idle and lock timers | `scripts/.local/bin/idle-watch` | In seconds; log in again to apply |
+| Lock screen look, clock format | `gtklock/.config/gtklock/style.css`, `config.ini` | Takes effect the next time you lock |
 | Night light warmth | `niri/.config/niri/config.kdl`, the `Mod+Alt+N` line | `-t 4000` is the colour temperature in kelvin |
 | Notification timeout | `mako/.config/mako/config`, `default-timeout` | In ms; run `makoctl reload` |
+| Animation speed | `niri/.config/niri/config.kdl`, `animations { }` | Lower `stiffness` and longer `duration-ms` are slower |
+| See-through unfocused windows | `niri/.config/niri/config.kdl`, the `is-focused=false` rule | `opacity 1.0` turns it off |
+| Drop-down terminal size and position | `niri/.config/niri/config.kdl`, the `dropterm` rule | |
+| Low-battery levels | `scripts/.local/bin/battery-watch` | Log in again to apply |
 | Terminal font and colours | `alacritty/.config/alacritty/alacritty.toml` | |
 | Wallpaper folder | `scripts/.local/bin/setwall`, `WDIR` | |
 
@@ -264,8 +316,10 @@ Also update the `rgba(143, 184, 246, …)` line in
 | `waybar` | [Waybar](https://github.com/Alexays/Waybar) | Top bar |
 | `fuzzel` | [fuzzel](https://codeberg.org/dnkl/fuzzel) | App launcher, also used for clipboard history |
 | `alacritty` | [Alacritty](https://alacritty.org) | Terminal |
+| `fastfetch` | [fastfetch](https://github.com/fastfetch-cli/fastfetch) | System info in the same colours |
+| `swappy` | [swappy](https://github.com/jtheoof/swappy) | Screenshot annotation |
 | `mako` | [mako](https://github.com/emersion/mako) | Notifications, the level popup, do not disturb |
-| `swaylock` | [swaylock](https://github.com/swaywm/swaylock) | Lock screen over a blurred copy of the wallpaper |
+| `gtklock` | [gtklock](https://github.com/jovanlanik/gtklock) | Lock screen: a big clock and date over a blurred copy of the wallpaper |
 | `wlogout` | [wlogout](https://github.com/ArtsyMacaw/wlogout) | Power menu |
 | `environment` | systemd | Session-wide settings for both niri and GNOME |
 | `scripts` | — | The helper commands below, in `~/.local/bin` |
@@ -283,7 +337,13 @@ Helper commands, which you can also run yourself in a terminal:
 | `power-profile [name]` | Switch to the next power profile, or to `power-saver`, `balanced` or `performance` |
 | `dnd-toggle`, `dnd-status` | Switch or show do not disturb |
 | `settings-panel <page>` | Open or close a GNOME Settings page: `wifi`, `bluetooth`, `sound`, `power` |
+| `dropterm` | Show or hide the drop-down terminal |
+| `window-switcher` | The `Mod + Tab` window list |
+| `notif-history` | The notification history list |
+| `obs-record` | Start or stop an OBS recording |
+| `screenshot-annotate` | Select an area, then open it in swappy |
 | `idle-watch [awake]` | The idle timers, started by niri at login |
+| `battery-watch` | The low-battery warnings, started by niri at login |
 | `osd`, `lockscreen-bg`, `waybar-calendar`, `waybar-media` | Used internally by the commands above |
 
 ## Troubleshooting
@@ -301,14 +361,21 @@ Helper commands, which you can also run yourself in a terminal:
 - **No password prompt when an app needs admin rights:** the polkit agent
   didn't start. Check that `mate-polkit` is installed, or point the niri
   config's polkit line at your distro's agent.
-- **Changes to `environment` or `idle-watch` don't apply:** both are read at
-  login. Log out and back in.
+- **Changes to `environment`, `idle-watch` or `battery-watch` don't apply:**
+  they're read at login. Log out and back in.
+- **The lock screen is stuck or blank:** switch to a text console with
+  `Ctrl + Alt + F3`, log in, run `WAYLAND_DISPLAY=wayland-1 gtklock`, then
+  go back with `Ctrl + Alt + F2` and unlock. (Your session's console number
+  may differ; `loginctl` shows it.)
+- **`Mod + Alt + R` says it can't reach OBS:** OBS's WebSocket server is off.
+  See [Recording with OBS](#recording-with-obs).
 
 ## Removing it
 
 ```sh
 cd ~/dotfiles
-stow -D niri waybar fuzzel alacritty mako swaylock wlogout environment scripts
+stow -D niri waybar fuzzel alacritty mako gtklock wlogout swappy fastfetch \
+    environment scripts
 ```
 
 This removes only the links. Your own files, wallpapers and screenshots stay.

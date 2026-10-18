@@ -1,0 +1,42 @@
+/* Lock screen in the desktop's palette */
+window {
+    background-size: cover;
+    background-position: center;
+    background-color: #1d1d20;
+}
+
+#clock-label {
+    font-family: "Adwaita Sans";
+    font-weight: 700;
+    font-size: 120pt;
+    color: #f2f2f5;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+}
+#date-label {
+    font-family: "Adwaita Sans";
+    font-weight: 600;
+    font-size: 20pt;
+    color: #d4d4dc;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.35);
+}
+/* Smaller clock while the password field is showing */
+window.focused:not(.hidden) #clock-label { font-size: 80pt; }
+window.focused:not(.hidden) #date-label  { font-size: 16pt; }
+
+#input-field {
+    font-family: "Adwaita Sans";
+    font-size: 14pt;
+    color: #f2f2f5;
+    caret-color: #8fb8f6;
+    background: rgba(30, 30, 34, 0.85);
+    border: 2px solid rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    padding: 10px 20px;
+    min-height: 26px;
+    box-shadow: none;
+    outline: none;
+}
+#input-field:focus { border-color: #8fb8f6; }
+
+#error-label   { color: #f2a1a8; font-weight: 600; }
+#warning-label { color: #f3d98b; font-weight: 600; }

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Warns once at 15% and again at 5% while discharging. Started by niri.
+BAT=$(ls -d /sys/class/power_supply/BAT* 2>/dev/null | head -1)
+[ -n "$BAT" ] || exit 0
+warned=100
+while sleep 60; do
+    level=$(cat "$BAT/capacity"); status=$(cat "$BAT/status")
+    if [ "$status" != Discharging ]; then warned=100; continue; fi
+    if [ "$level" -le 5 ] && [ "$warned" -gt 5 ]; then
+        notify-send -a Battery -u critical -i battery-empty "Battery at ${level}%" "Plug in now - the laptop will shut down soon."
+        warned=5
+    elif [ "$level" -le 15 ] && [ "$warned" -gt 15 ]; then
+        notify-send -a Battery -u normal -i battery-caution "Battery low: ${level}%" "Consider plugging in."
+        warned=15
+    fi
+done

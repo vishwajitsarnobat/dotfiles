@@ -70,7 +70,32 @@ hotkey-overlay {
 
 screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 
-animations { }
+// Softer, slightly slower motion than niri's defaults
+animations {
+    window-open {
+        duration-ms 220
+        curve "ease-out-expo"
+    }
+    window-close {
+        duration-ms 180
+        curve "ease-out-quad"
+    }
+    workspace-switch {
+        spring damping-ratio=1.0 stiffness=700 epsilon=0.0001
+    }
+    horizontal-view-movement {
+        spring damping-ratio=1.0 stiffness=600 epsilon=0.0001
+    }
+    window-movement {
+        spring damping-ratio=1.0 stiffness=600 epsilon=0.0001
+    }
+    window-resize {
+        spring damping-ratio=1.0 stiffness=600 epsilon=0.0001
+    }
+    overview-open-close {
+        spring damping-ratio=1.0 stiffness=600 epsilon=0.0001
+    }
+}
 
 // ---------- Startup apps ----------
 spawn-at-startup "waybar"
@@ -80,6 +105,7 @@ spawn-sh-at-startup "~/.local/bin/idle-watch"
 // Password prompts for admin actions. Fedora/Debian path first, then Arch's.
 spawn-sh-at-startup "for p in /usr/libexec/polkit-mate-authentication-agent-1 /usr/lib/mate-polkit/polkit-mate-authentication-agent-1; do [ -x $p ] && exec $p; done"
 spawn-sh-at-startup "wl-paste --watch cliphist store"
+spawn-sh-at-startup "~/.local/bin/battery-watch"
 
 // ---------- Window rules ----------
 // Rounded corners on all windows (same radius as GNOME apps)
@@ -92,6 +118,21 @@ window-rule {
 // if it remembers being maximized. Mod+M still maximizes on demand.
 window-rule {
     open-maximized-to-edges false
+}
+
+// Unfocused windows are slightly see-through, so the focused one stands out
+window-rule {
+    match is-focused=false
+    opacity 0.94
+}
+
+// Drop-down terminal (Mod+`): floating, near the top, centred
+window-rule {
+    match app-id="^dropterm$"
+    open-floating true
+    default-column-width { proportion 0.6; }
+    default-window-height { proportion 0.55; }
+    default-floating-position x=0 y=12 relative-to="top"
 }
 
 // Small pop-up windows float
@@ -111,6 +152,8 @@ binds {
     Mod+T hotkey-overlay-title="Terminal: alacritty" { spawn "alacritty"; }
     Mod+D hotkey-overlay-title="App launcher: fuzzel" { spawn "fuzzel"; }
     Mod+E hotkey-overlay-title="Files" { spawn "nautilus" "--new-window"; }
+    Mod+Grave hotkey-overlay-title="Drop-down terminal" { spawn-sh "~/.local/bin/dropterm"; }
+    Mod+Tab hotkey-overlay-title="Switch window" { spawn-sh "~/.local/bin/window-switcher"; }
 
     // System keys: Mod+Alt+<letter>. Most are toggles - press again to undo.
     Mod+Alt+W hotkey-overlay-title="Wi-Fi settings"     { spawn-sh "~/.local/bin/settings-panel wifi"; }
@@ -123,6 +166,8 @@ binds {
     Mod+Alt+T hotkey-overlay-title="Apps: light / dark" { spawn-sh "~/.local/bin/theme"; }
     Mod+Alt+C hotkey-overlay-title="Clear notifications" { spawn "makoctl" "dismiss" "--all"; }
     Mod+Alt+L hotkey-overlay-title="Lock screen"        { spawn-sh "~/.local/bin/lockscreen"; }
+    Mod+Alt+H hotkey-overlay-title="Notification history" { spawn-sh "~/.local/bin/notif-history"; }
+    Mod+Alt+R hotkey-overlay-title="OBS: start / stop recording" { spawn-sh "~/.local/bin/obs-record"; }
     Mod+Alt+V hotkey-overlay-title="Clipboard history" { spawn-sh "cliphist list | fuzzel --dmenu --prompt '󰅍  ' | cliphist decode | wl-copy"; }
     Mod+Alt+P hotkey-overlay-title="Power menu"         { spawn-sh "~/.local/bin/powermenu"; }
 
@@ -265,10 +310,11 @@ binds {
     Mod+Shift+V { switch-focus-between-floating-and-tiling; }
     Mod+W       { toggle-column-tabbed-display; }
 
-    // Screenshots
-    Print      { screenshot; }
-    Ctrl+Print { screenshot-screen; }
-    Alt+Print  { screenshot-window; }
+    // Screenshots: saved to ~/Pictures/Screenshots and copied to the clipboard
+    Print       hotkey-overlay-title="Screenshot: select an area" { screenshot; }
+    Ctrl+Print  hotkey-overlay-title="Screenshot: whole screen"  { screenshot-screen; }
+    Alt+Print   hotkey-overlay-title="Screenshot: focused window" { screenshot-window; }
+    Shift+Print hotkey-overlay-title="Screenshot: select, then annotate" { spawn-sh "~/.local/bin/screenshot-annotate"; }
 
     // Safety
     Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }

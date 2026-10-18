@@ -1,0 +1,30 @@
+#!/usr/bin/env python3
+# Notification history in fuzzel, newest first. Pick one to copy its text.
+import json, subprocess
+
+try:
+    hist = json.loads(subprocess.check_output(["makoctl", "history", "-j"]))
+except Exception:
+    hist = []
+hist = [n for n in hist if n.get("app_name") != "osd"]          # skip volume/brightness popups
+if not hist:
+    subprocess.run(["notify-send", "-a", "osd", "-u", "low", "󰂚  No notifications yet"])
+    raise SystemExit
+
+def one_line(s):
+    return " ".join((s or "").split())
+
+lines = []
+for n in hist:
+    app = n.get("app_name") or "Notification"
+    body = one_line(n.get("body"))
+    lines.append(f"{app}  ·  {one_line(n.get('summary'))}" + (f"  —  {body}" if body else ""))
+
+r = subprocess.run(["fuzzel", "--dmenu", "--index", "--prompt", "󰂚    ", "--width", "70",
+                    "--placeholder", "Notification history…"],
+                   input="\n".join(lines), capture_output=True, text=True)
+if r.returncode == 0 and r.stdout.strip().isdigit():
+    n = hist[int(r.stdout)]
+    text = "\n".join(x for x in (n.get("summary"), n.get("body")) if x)
+    subprocess.run(["wl-copy"], input=text, text=True)
+    subprocess.run(["notify-send", "-a", "osd", "-u", "low", "󰅍  Copied to clipboard"])

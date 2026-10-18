@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
-# Locks the screen with swaylock over a blurred copy of the wallpaper.
-pidof swaylock >/dev/null && exit 0
+# Locks the screen with gtklock over a blurred copy of the wallpaper.
+pidof gtklock >/dev/null && exit 0
 "$HOME/.local/bin/lockscreen-bg"
-BG="$HOME/.cache/lockscreen.jpg"
-if [ -f "$BG" ]; then
-    swaylock -f -i "$BG"
-else
-    swaylock -f
-fi
+C="$HOME/.config/gtklock"
+args=(-d -s "$C/style.css" -x "$C/layout.ui")
+BG="$HOME/.cache/lockscreen.png"
+[ -f "$BG" ] && args+=(-b "$BG")
+exec gtklock "${args[@]}"

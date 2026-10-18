@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Select an area with niri's screenshot UI, then open it in swappy to draw,
+# highlight, blur or add text. Save or copy from swappy's toolbar.
+command -v swappy >/dev/null || { notify-send -a osd -u low "Install swappy to annotate"; exit 1; }
+TMP="${XDG_RUNTIME_DIR:-/tmp}/screenshot-annotate.png"
+rm -f "$TMP"
+niri msg action screenshot --path "$TMP"
+# niri returns at once; wait (up to 2 min) for the selection to be confirmed
+for _ in $(seq 1200); do
+    [ -s "$TMP" ] && break
+    sleep 0.1
+done
+[ -s "$TMP" ] || exit 0
+sleep 0.2
+exec swappy -f "$TMP"

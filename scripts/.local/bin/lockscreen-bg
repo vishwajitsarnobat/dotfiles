@@ -1,9 +1,19 @@
 #!/usr/bin/env bash
-# Makes a blurred, darkened copy of the wallpaper for the lock screen.
+# Builds the lock screen background: the wallpaper blurred and darkened,
+# with a soft vignette, at the screen's exact size.
 WALL="$HOME/Pictures/wallpaper.jpg"
-BLUR="$HOME/.cache/lockscreen.jpg"
+OUT="$HOME/.cache/lockscreen.png"
 [ -f "$WALL" ] || exit 0
-[ -f "$BLUR" ] && [ "$BLUR" -nt "$WALL" ] && exit 0
-IM=$(command -v magick || command -v convert) || exit 0
+# Rebuild only when the wallpaper or this script changed
+[ -f "$OUT" ] && [ "$OUT" -nt "$WALL" ] && [ "$OUT" -nt "$(readlink -f "$0")" ] && exit 0
+IM=$(command -v magick) || exit 0
 mkdir -p "$HOME/.cache"
-"$IM" "$WALL" -resize 1920x -blur 0x18 -fill '#1e1e22' -colorize 40% "$BLUR" 2>/dev/null
+read -r W H < <(niri msg -j focused-output 2>/dev/null | python3 -c '
+import json, sys
+o = json.load(sys.stdin); m = o["modes"][o["current_mode"]]
+print(m["width"], m["height"])' 2>/dev/null)
+W=${W:-1920}; H=${H:-1080}
+"$IM" "$WALL" -resize "${W}x${H}^" -gravity center -extent "${W}x${H}" \
+    -blur 0x18 -fill '#1e1e22' -colorize 40% \
+    \( -size "${W}x${H}" radial-gradient:'rgba(0,0,0,0)'-'rgba(0,0,0,0.55)' \) \
+    -compose over -composite "$OUT.tmp.png" && mv "$OUT.tmp.png" "$OUT"

@@ -1,0 +1,77 @@
+#!/usr/bin/env python3
+# Start / stop OBS recording from a key.
+# OBS not running -> start it in the tray and begin recording.
+# OBS running     -> toggle recording over OBS's WebSocket server
+#                    (enable it in OBS: Tools -> WebSocket Server Settings).
+import base64, hashlib, json, os, socket, struct, subprocess, sys
+
+CONF = os.path.expanduser("~/.config/obs-studio/plugin_config/obs-websocket/config.json")
+
+def osd(msg):
+    subprocess.run(["notify-send", "-a", "osd", "-u", "low", msg])
+
+if subprocess.run(["pgrep", "-x", "obs"], capture_output=True).returncode != 0:
+    subprocess.Popen(["obs", "--startrecording", "--minimize-to-tray"],
+                     stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+    osd("󰑋  Recording started")
+    sys.exit()
+
+try:
+    conf = json.load(open(CONF))
+except Exception:
+    conf = {}
+if not conf.get("server_enabled"):
+    osd("Turn on OBS's WebSocket server: Tools → WebSocket Server Settings")
+    sys.exit(1)
+
+def send(sock, obj):
+    data = json.dumps(obj).encode()
+    mask = os.urandom(4)
+    head = b"\x81"
+    n = len(data)
+    head += bytes([0x80 | n]) if n < 126 else bytes([0x80 | 126]) + struct.pack(">H", n)
+    sock.sendall(head + mask + bytes(b ^ mask[i % 4] for i, b in enumerate(data)))
+
+def recv(sock):
+    def read(n):
+        buf = b""
+        while len(buf) < n:
+            chunk = sock.recv(n - len(buf))
+            if not chunk:
+                raise ConnectionError
+            buf += chunk
+        return buf
+    b1, b2 = read(2)
+    n = b2 & 0x7F
+    if n == 126:
+        n = struct.unpack(">H", read(2))[0]
+    elif n == 127:
+        n = struct.unpack(">Q", read(8))[0]
+    return json.loads(read(n))
+
+try:
+    sock = socket.create_connection(("127.0.0.1", conf.get("server_port", 4455)), timeout=3)
+    key = base64.b64encode(os.urandom(16)).decode()
+    sock.sendall((f"GET / HTTP/1.1\r\nHost: 127.0.0.1\r\nUpgrade: websocket\r\nConnection: Upgrade\r\n"
+                  f"Sec-WebSocket-Key: {key}\r\nSec-WebSocket-Version: 13\r\n"
+                  f"Sec-WebSocket-Protocol: obswebsocket.json\r\n\r\n").encode())
+    resp = b""
+    while b"\r\n\r\n" not in resp:
+        resp += sock.recv(1024)
+    hello = recv(sock)["d"]
+    ident = {"rpcVersion": 1}
+    if "authentication" in hello:
+        a = hello["authentication"]
+        secret = base64.b64encode(hashlib.sha256((conf.get("server_password", "") + a["salt"]).encode()).digest())
+        ident["authentication"] = base64.b64encode(hashlib.sha256(secret + a["challenge"].encode()).digest()).decode()
+    send(sock, {"op": 1, "d": ident})
+    recv(sock)                                                   # Identified
+    send(sock, {"op": 6, "d": {"requestType": "ToggleRecord", "requestId": "1"}})
+    reply = recv(sock)
+    while reply.get("op") != 7:
+        reply = recv(sock)
+    active = reply["d"].get("responseData", {}).get("outputActive")
+    osd("󰑋  Recording started" if active else "󰻃  Recording saved")
+except Exception as e:
+    osd(f"Couldn't reach OBS: {e.__class__.__name__}")
+    sys.exit(1)

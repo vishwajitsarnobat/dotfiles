@@ -1,0 +1,41 @@
+#!/usr/bin/env python3
+# Window switcher: lists open windows, most recently used first, in fuzzel.
+# The window you were on before is at the top, so Mod+Tab, Enter flips back.
+import configparser, glob, json, os, subprocess
+
+NAMES = {"dropterm": "Drop-down terminal"}
+
+def app_name(app_id, cache={}):
+    if app_id not in cache:
+        name = NAMES.get(app_id, app_id)
+        dirs = [os.path.expanduser("~/.local/share/applications"),
+                "/usr/share/applications", "/var/lib/flatpak/exports/share/applications"]
+        for d in dirs:
+            for f in glob.glob(f"{d}/{app_id}.desktop") + glob.glob(f"{d}/*{app_id}*.desktop"):
+                cp = configparser.ConfigParser(interpolation=None, strict=False)
+                try:
+                    cp.read(f)
+                    name = cp["Desktop Entry"]["Name"]
+                    break
+                except Exception:
+                    pass
+            if name != app_id:
+                break
+        cache[app_id] = name
+    return cache[app_id]
+
+wins = json.loads(subprocess.check_output(["niri", "msg", "-j", "windows"]))
+ws = {w["id"]: w["idx"] for w in json.loads(subprocess.check_output(["niri", "msg", "-j", "workspaces"]))}
+def stamp(w):
+    t = w.get("focus_timestamp") or {}
+    return (t.get("secs", 0), t.get("nanos", 0))
+wins.sort(key=lambda w: (w["is_focused"], [-x for x in stamp(w)]))   # current window last
+if not wins:
+    raise SystemExit
+lines = [f"{app_name(w['app_id'])}  ·  {w['title'] or ''}  ({ws.get(w['workspace_id'], '?')})"
+         for w in wins]
+r = subprocess.run(["fuzzel", "--dmenu", "--index", "--prompt", "    ", "--width", "60",
+                    "--placeholder", "Switch to window…"],
+                   input="\n".join(lines), capture_output=True, text=True)
+if r.returncode == 0 and r.stdout.strip().isdigit():
+    subprocess.run(["niri", "msg", "action", "focus-window", "--id", str(wins[int(r.stdout)]["id"])])
