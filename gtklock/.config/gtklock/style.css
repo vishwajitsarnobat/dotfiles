@@ -38,5 +38,13 @@ window.focused:not(.hidden) #date-label  { font-size: 18pt; }
 /* Invisible but focused while hidden, so the first key gets typed */
 window.hidden #input-field { opacity: 0; }
 
+/* Pulse while the password is checked. The animation also keeps gtklock
+   redrawing, so it unlocks at once instead of on its next clock tick. */
+@keyframes checking { to { opacity: 0.5; } }
+#input-field:disabled {
+    color: #f2f2f5;
+    animation: checking 500ms ease-in-out infinite alternate;
+}
+
 #error-label   { color: #f2a1a8; }
 #warning-label { color: #f3d98b; }

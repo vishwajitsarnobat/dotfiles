@@ -114,6 +114,8 @@ System stuff is all on `Mod + Alt`:
   (Tools → WebSocket Server Settings).
 - GNOME Settings refuses to start outside GNOME, so `applications` and
   `settings-panel` start it with `XDG_CURRENT_DESKTOP=GNOME`.
+- Qt apps (OBS, Kdenlive) are told to use the GTK theme and fonts, since they
+  don't recognise niri.
 
 Laptop-specific bits you may want to drop:
 

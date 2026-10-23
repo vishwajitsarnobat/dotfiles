@@ -63,7 +63,6 @@ cursor {
 hotkey-overlay {
     skip-at-startup
 }
-
 screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 
 // A bit slower than the defaults
@@ -130,6 +129,15 @@ window-rule {
     default-column-width { proportion 0.6; }
     default-window-height { proportion 0.55; }
     default-floating-position x=0 y=12 relative-to="top"
+}
+
+// Video players open full width
+window-rule {
+    match app-id=r#"^vlc$"#
+    match app-id=r#"^mpv$"#
+    match app-id=r#"^org\.gnome\.Showtime$"#
+    match app-id=r#"^io\.github\.celluloid_player\.Celluloid$"#
+    default-column-width { proportion 1.0; }
 }
 
 // Small pop-up windows float

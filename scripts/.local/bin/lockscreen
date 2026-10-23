@@ -5,6 +5,14 @@ C="$HOME/.config/gtklock"
 args=(-d -s "$C/style.css" -x "$C/layout.ui")
 BG="$HOME/.cache/lockscreen.png"
 [ -f "$BG" ] && args+=(-b "$BG")
-# Fade into the lock screen instead of popping (gtklock takes ~0.3 s)
-niri msg action do-screen-transition --delay-ms 300 2>/dev/null
-exec gtklock "${args[@]}"
+
+# Fade into the lock screen instead of popping. niri freezes the screen while
+# gtklock starts, then crossfades; the freeze is as long as gtklock took last
+# time (gtklock -d returns once the lock is on screen).
+T="$HOME/.cache/lockscreen-ms"
+ms=$(cat "$T" 2>/dev/null)
+[[ $ms =~ ^[0-9]+$ ]] || ms=300
+delay=$(( ms + 30 < 120 ? 120 : ms + 30 > 450 ? 450 : ms + 30 ))
+niri msg action do-screen-transition --delay-ms "$delay" 2>/dev/null
+start=$(date +%s%3N)
+gtklock "${args[@]}" && echo $(( $(date +%s%3N) - start )) > "$T"
