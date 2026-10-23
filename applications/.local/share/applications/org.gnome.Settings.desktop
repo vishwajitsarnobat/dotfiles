@@ -1,6 +1,4 @@
-# GNOME Settings refuses to start outside GNOME, so launchers (fuzzel) start it
-# as if in GNOME, like ~/.local/bin/settings-panel does. Copy of the system
-# entry with Exec changed and the GNOME-only lines removed.
+# System entry, but started as if in GNOME (it won't run otherwise)
 [Desktop Entry]
 Name[af]=Instellings
 Name[an]=Configuración

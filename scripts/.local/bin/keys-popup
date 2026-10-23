@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
-# Keyboard shortcuts card (Mod+Shift+/).
-# Keys with a hotkey-overlay-title in the niri config are listed
-# automatically; niri's own window and workspace keys come from the short
-# list below and only show if they're bound.
-# Esc, a click outside, the same key or Mod+Q closes it (see popup.py).
+# Key list (Mod+Shift+/). Named keys come from the niri config; niri's own
+# keys from the lists below, if bound.
 import os, re, sys
 
 sys.path.insert(0, os.path.expanduser("~/.local/lib/dotfiles"))
@@ -17,7 +14,7 @@ import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 
-# niri's built-in keys worth knowing: (keys, description, action that must be bound)
+# (keys, description, action it must be bound to)
 WINDOWS = [
     ("Mod+Q", "Close window", "close-window"),
     ("Mod+Left/Right", "Focus column left / right", "focus-column-left"),
@@ -51,16 +48,15 @@ SESSION = [
 ]
 
 CSS = b"""
-#card { padding: 22px 26px 18px 26px; margin: 16px; }
-#title    { font-size: 17pt; font-weight: 700; color: #f2f2f5; }
-#subtitle { font-size: 10.5pt; font-weight: 500; color: #6b6b76; }
-.section  { font-size: 9.5pt; font-weight: 800; color: #8fb8f6; letter-spacing: 1px; }
-.desc     { font-size: 11pt; font-weight: 500; color: #d4d4dc; }
+#card { padding: 22px 26px 22px 26px; margin: 16px; }
+#title  { font-size: 15pt; font-weight: 600; color: #f2f2f5; }
+.section { font-size: 11pt; font-weight: 600; color: #f2f2f5; }
+.prefix  { font-size: 9.5pt; color: #6b6b76; }
+.desc    { font-size: 11pt; color: #a8a8b3; }
 .keycap {
-    font-size: 9.5pt; font-weight: 700; color: #f2f2f5;
-    background: rgba(255, 255, 255, 0.07);
-    border: 1px solid rgba(255, 255, 255, 0.10);
-    border-bottom: 2px solid rgba(0, 0, 0, 0.45);
+    font-size: 9.5pt; font-weight: 600; color: #e3e3e8;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 6px;
     padding: 1px 7px;
     min-width: 12px;
@@ -108,9 +104,23 @@ def keycaps(keys):
 
 
 def section(title, rows):
+    """A titled list of keys. A modifier every row shares (Super, Super + Alt)
+    is shown once next to the title instead of on every row."""
+    prefix = next((p for p in ("Mod+Alt+", "Mod+")
+                   if all(k.startswith(p) for k, _ in rows)), "")
+    if prefix:
+        rows = [(k[len(prefix):], d) for k, d in rows]
+
     grid = Gtk.Grid(row_spacing=7, column_spacing=16)
-    head = Gtk.Label(label=title.upper(), xalign=0)
-    head.get_style_context().add_class("section")
+    head = Gtk.Box(spacing=8)
+    title_lbl = Gtk.Label(label=title, xalign=0)
+    title_lbl.get_style_context().add_class("section")
+    head.pack_start(title_lbl, False, False, 0)
+    if prefix:
+        mods = " + ".join(KEY_NAMES.get(m, m) for m in prefix.strip("+").split("+"))
+        pre = Gtk.Label(label=mods + " +", xalign=0)
+        pre.get_style_context().add_class("prefix")
+        head.pack_start(pre, False, False, 0)
     grid.attach(head, 0, 0, 2, 1)
     for r, (keys, desc) in enumerate(rows, start=1):
         grid.attach(keycaps(keys), 0, r, 1, 1)
@@ -144,13 +154,9 @@ def build_sections():
 
 def build_card():
     card = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=18, name="card")
-    head = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
-    head.pack_start(Gtk.Label(label="Keyboard shortcuts", name="title", xalign=0), False, False, 0)
-    head.pack_start(Gtk.Label(label="Super is the Windows key  ·  Esc or a click outside to close",
-                              name="subtitle", xalign=0), False, False, 0)
-    card.pack_start(head, False, False, 0)
+    card.pack_start(Gtk.Label(label="Keyboard shortcuts", name="title", xalign=0), False, False, 0)
 
-    cols = Gtk.Box(spacing=44)
+    cols = Gtk.Box(spacing=48)
     for column in build_sections():
         col = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
         for title, rows in column:

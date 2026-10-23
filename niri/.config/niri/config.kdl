@@ -1,4 +1,4 @@
-// niri config - GNOME-dark + soft pastel accents
+// niri config
 // Wiki: https://niri-wm.github.io/niri/Configuration:-Introduction
 
 input {
@@ -12,13 +12,11 @@ input {
     }
 }
 
-// Monitors are detected automatically.
-// To set one manually, run `niri msg outputs` and add an output block.
+// Monitors are auto-detected; `niri msg outputs` lists them.
 
 layout {
     gaps 8
-    // Negative struts trim the outer gap: 8px between windows, 4px at the
-    // screen edges and under the bar (matches Waybar's 4px side margin)
+    // 8px between windows, 4px at the screen edges
     struts {
         left -4
         right -4
@@ -34,12 +32,11 @@ layout {
     }
     default-column-width { proportion 0.5; }
 
-    // Thin light outline on every window, brighter on the focused one
     focus-ring {
         off
     }
     border {
-        width 2
+        width 1.5
         active-color "#8fb8f6"
         inactive-color "#ffffff1a"
         urgent-color "#f2a1a8"
@@ -63,14 +60,13 @@ cursor {
     xcursor-size 24
 }
 
-// Don't show the key list at every login (Mod+Shift+/ still shows it)
 hotkey-overlay {
     skip-at-startup
 }
 
 screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 
-// Softer, slightly slower motion than niri's defaults
+// A bit slower than the defaults
 animations {
     window-open {
         duration-ms 220
@@ -102,34 +98,32 @@ spawn-at-startup "waybar"
 spawn-at-startup "mako"
 spawn-sh-at-startup "[ -f ~/Pictures/wallpaper.jpg ] && swaybg -m fill -i ~/Pictures/wallpaper.jpg || swaybg -c 1d1d20"
 spawn-sh-at-startup "~/.local/bin/idle-watch"
-// Password prompts for admin actions. Fedora/Debian path first, then Arch's.
+// polkit agent (Fedora path, then Arch)
 spawn-sh-at-startup "for p in /usr/libexec/polkit-mate-authentication-agent-1 /usr/lib/mate-polkit/polkit-mate-authentication-agent-1; do [ -x $p ] && exec $p; done"
 spawn-sh-at-startup "wl-paste --watch cliphist store"
-// GNOME's radio switch service (rfkill). GNOME Settings' Bluetooth page needs
-// it to see and turn on Bluetooth; GNOME starts it, niri has to.
+// GNOME Settings needs this to see Bluetooth
 spawn-sh-at-startup "for p in /usr/libexec/gsd-rfkill /usr/lib/gsd-rfkill; do [ -x $p ] && exec $p; done"
 spawn-sh-at-startup "~/.local/bin/battery-watch"
 
 // ---------- Window rules ----------
-// Rounded corners on all windows (same radius as GNOME apps)
+// Same corner radius as GNOME apps
 window-rule {
     geometry-corner-radius 12
     clip-to-geometry true
 }
 
-// Open every app as a normal tiled window (with gaps and border), even
-// if it remembers being maximized. Mod+M still maximizes on demand.
+// Don't open apps maximized
 window-rule {
     open-maximized-to-edges false
 }
 
-// Unfocused windows are slightly see-through, so the focused one stands out
+// Unfocused windows slightly see-through
 window-rule {
     match is-focused=false
     opacity 0.94
 }
 
-// Drop-down terminal (Mod+`): floating, near the top, centred
+// Drop-down terminal
 window-rule {
     match app-id="^dropterm$"
     open-floating true
@@ -149,8 +143,7 @@ window-rule {
 
 // ---------- Keys ----------
 binds {
-    // Key list: our own card (keys-popup) instead of niri's plain overlay.
-    // It reads the hotkey-overlay-title names below, so keep those up to date.
+    // keys-popup builds its list from the hotkey-overlay-title names below
     Mod+Shift+Slash { spawn-sh "~/.local/bin/keys-popup"; }
 
     // Apps
@@ -160,7 +153,7 @@ binds {
     Mod+Grave hotkey-overlay-title="Drop-down terminal" { spawn-sh "~/.local/bin/dropterm"; }
     Mod+Tab hotkey-overlay-title="Switch window" { spawn-sh "~/.local/bin/window-switcher"; }
 
-    // System keys: Mod+Alt+<letter>. Most are toggles - press again to undo.
+    // System
     Mod+Alt+W hotkey-overlay-title="Wi-Fi settings"     { spawn-sh "~/.local/bin/settings-panel wifi"; }
     Mod+Alt+B hotkey-overlay-title="Bluetooth settings" { spawn-sh "~/.local/bin/settings-panel bluetooth"; }
     Mod+Alt+S hotkey-overlay-title="Sound settings"     { spawn-sh "~/.local/bin/settings-panel sound"; }
@@ -176,13 +169,12 @@ binds {
     Mod+Alt+V hotkey-overlay-title="Clipboard history" { spawn-sh "cliphist list | fuzzel --dmenu --prompt '󰅍  ' | cliphist decode | wl-copy"; }
     Mod+Alt+P hotkey-overlay-title="Power menu"         { spawn-sh "~/.local/bin/powermenu"; }
 
-    // Volume and brightness: 5% steps with a small popup
+    // Volume and brightness
     XF86AudioRaiseVolume  allow-when-locked=true { spawn-sh "~/.local/bin/volume up"; }
     XF86AudioLowerVolume  allow-when-locked=true { spawn-sh "~/.local/bin/volume down"; }
     XF86AudioMute         allow-when-locked=true { spawn-sh "~/.local/bin/volume mute"; }
     XF86AudioMicMute      allow-when-locked=true { spawn-sh "~/.local/bin/volume mic-mute"; }
-    // Acer Aspire A514-56GM: the mic-mute key (Fn+F4) sends XF86Launch6
-    // instead of the standard XF86AudioMicMute, so it's bound here by hand.
+    // My laptop's mic-mute key (Fn+F4) sends XF86Launch6
     XF86Launch6           allow-when-locked=true { spawn-sh "~/.local/bin/volume mic-mute"; }
     XF86MonBrightnessUp   allow-when-locked=true { spawn-sh "~/.local/bin/brightness up"; }
     XF86MonBrightnessDown allow-when-locked=true { spawn-sh "~/.local/bin/brightness down"; }
@@ -195,7 +187,7 @@ binds {
 
     // Windows
     Mod+O repeat=false { toggle-overview; }
-    // Closes an open pop-up card first (calendar, shortcuts), else the window
+    // Closes an open popup first
     Mod+Q repeat=false { spawn-sh "~/.local/bin/close-focused"; }
 
     Mod+Left  { focus-column-left; }
@@ -316,7 +308,7 @@ binds {
     Mod+Shift+V { switch-focus-between-floating-and-tiling; }
     Mod+W       { toggle-column-tabbed-display; }
 
-    // Screenshots: saved to ~/Pictures/Screenshots and copied to the clipboard
+    // Screenshots
     Print       hotkey-overlay-title="Screenshot: select an area" { screenshot; }
     Ctrl+Print  hotkey-overlay-title="Screenshot: whole screen"  { screenshot-screen; }
     Alt+Print   hotkey-overlay-title="Screenshot: focused window" { screenshot-window; }

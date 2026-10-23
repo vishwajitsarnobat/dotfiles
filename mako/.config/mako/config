@@ -1,10 +1,10 @@
 font=Adwaita Sans, JetBrainsMono Nerd Font 12
 format=<b>%s</b>\n%b
-background-color=#2b2b33
+background-color=#1e1e22f7
 text-color=#f2f2f5
-border-color=#8fb8f6
-border-size=2
-border-radius=14
+border-color=#ffffff14
+border-size=1
+border-radius=12
 padding=14,18
 margin=10,12
 outer-margin=6
@@ -14,30 +14,26 @@ progress-color=over #8fb8f655
 default-timeout=6000
 max-history=30
 
-[urgency=low]
-border-color=#6b6b76
-
 [urgency=high]
 border-color=#f2a1a8
 default-timeout=0
 
-# Do not disturb: hide notifications and keep them until it's turned off
+# Do not disturb: hold notifications until it is off
 [mode=do-not-disturb]
 invisible=1
 default-timeout=0
 ignore-timeout=1
 
-# Volume / brightness popup: small, short-lived, replaces itself
+# Volume / brightness popup
 [app-name=osd]
 format=<b>%s</b>
 width=260
 padding=12,16
 default-timeout=1200
-border-color=#8fb8f6
 
 [mode=do-not-disturb app-name=osd]
 invisible=0
 
-# Critical alerts (like battery at 5%) still show during do not disturb
+# Critical ones still show
 [mode=do-not-disturb urgency=critical]
 invisible=0

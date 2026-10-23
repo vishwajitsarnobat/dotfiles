@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
-# Start / stop OBS recording from a key.
-# OBS not running -> start it in the tray and begin recording.
-# OBS running     -> toggle recording over OBS's WebSocket server
-#                    (enable it in OBS: Tools -> WebSocket Server Settings).
+# Start / stop OBS recording. Starts OBS if needed; otherwise talks to its
+# WebSocket server (Tools -> WebSocket Server Settings).
 import base64, hashlib, json, os, socket, struct, subprocess, sys
 
 CONF = os.path.expanduser("~/.config/obs-studio/plugin_config/obs-websocket/config.json")

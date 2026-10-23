@@ -1,47 +1,42 @@
-/* Lock screen in the desktop's palette */
 window {
     background-size: cover;
     background-position: center;
     background-color: #1d1d20;
 }
 
-#clock-label {
-    font-family: "Adwaita Sans";
-    font-weight: 700;
-    font-size: 120pt;
-    color: #f2f2f5;
-    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
-}
 #date-label {
     font-family: "Adwaita Sans";
     font-weight: 600;
-    font-size: 20pt;
-    color: #d4d4dc;
-    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.35);
+    font-size: 18pt;
+    color: #e3e3e8;
 }
-/* gtklock shrinks the clock while the password field shows; keep it full size */
-window.focused:not(.hidden) #clock-label { font-size: 120pt; }
-window.focused:not(.hidden) #date-label  { font-size: 20pt; }
+#clock-label {
+    font-family: "Adwaita Sans";
+    font-weight: 700;
+    font-size: 110pt;
+    color: #f2f2f5;
+}
+/* Don't shrink the clock when the field shows */
+window.focused:not(.hidden) #clock-label { font-size: 110pt; }
+window.focused:not(.hidden) #date-label  { font-size: 18pt; }
 
 #input-field {
     font-family: "Adwaita Sans";
-    font-size: 14pt;
+    font-size: 13pt;
     color: #f2f2f5;
     caret-color: #8fb8f6;
     background: rgba(30, 30, 34, 0.85);
-    border: 2px solid rgba(255, 255, 255, 0.08);
-    border-radius: 999px;
-    padding: 10px 20px;
-    min-height: 26px;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 12px;
+    padding: 10px 16px;
+    min-height: 24px;
     box-shadow: none;
     outline: none;
+    transition: opacity 200ms ease-out;
 }
-#input-field:focus { border-color: #8fb8f6; }
-#input-field { transition: opacity 200ms ease-out; }
 
-/* At rest (gtklock's "hidden" state) the field is invisible but still has the
-   keyboard, so the key that wakes the screen lands in it */
+/* Invisible but focused while hidden, so the first key gets typed */
 window.hidden #input-field { opacity: 0; }
 
-#error-label   { color: #f2a1a8; font-weight: 600; }
-#warning-label { color: #f3d98b; font-weight: 600; }
+#error-label   { color: #f2a1a8; }
+#warning-label { color: #f3d98b; }

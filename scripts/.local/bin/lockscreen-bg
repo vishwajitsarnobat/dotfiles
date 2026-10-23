@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# Builds the lock screen background: the wallpaper blurred and darkened,
-# with a soft vignette, at the screen's exact size.
+# Blurred, darkened wallpaper for the lock screen
 WALL="$HOME/Pictures/wallpaper.jpg"
 OUT="$HOME/.cache/lockscreen.png"
 [ -f "$WALL" ] || exit 0
@@ -15,5 +14,5 @@ print(m["width"], m["height"])' 2>/dev/null)
 W=${W:-1920}; H=${H:-1080}
 "$IM" "$WALL" -resize "${W}x${H}^" -gravity center -extent "${W}x${H}" \
     -blur 0x18 -fill '#1e1e22' -colorize 40% \
-    \( -size "${W}x${H}" radial-gradient:'rgba(0,0,0,0)'-'rgba(0,0,0,0.55)' \) \
+    \( -size "${W}x${H}" radial-gradient:'rgba(0,0,0,0)'-'rgba(0,0,0,0.3)' \) \
     -compose over -composite "$OUT.tmp.png" && mv "$OUT.tmp.png" "$OUT"

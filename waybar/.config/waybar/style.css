@@ -1,4 +1,3 @@
-/* Three rounded islands - GNOME-dark greys, one blue accent */
 @define-color fg          #f2f2f5;
 @define-color muted       #a8a8b3;
 @define-color dim         #8b8b96;
@@ -29,7 +28,7 @@ window#waybar {
     color: @fg;
 }
 
-/* Three separate islands: workspaces | time + window | status */
+/* Three islands */
 .modules-left,
 .modules-center,
 .modules-right {
@@ -41,12 +40,12 @@ window#waybar {
 
 #clock {
     padding: 0 10px 0 8px;
-    font-weight: 700;
+    font-weight: 600;
 }
 
 #window {
     padding: 0 10px 0 4px;
-    font-weight: 500;
+    font-weight: 400;
     color: @muted;
 }
 
@@ -73,32 +72,31 @@ window#waybar {
 #workspaces button.focused:hover { background: @accent; }
 #workspaces button.urgent { color: @pink; }
 
-/* Status icons - one font, one size */
+/* Status icons */
 #custom-awake, #custom-dnd, #pulseaudio, #network, #bluetooth,
 #power-profiles-daemon, #battery, #custom-power {
     font-family: "JetBrainsMono Nerd Font";
     font-size: 20px;
     padding: 0 8px;
 }
-/* Two colours: blue = on, grey = off (every crossed-out icon is grey).
-   Battery and power keep their own. */
+/* Blue when on, grey when off */
 #custom-awake.on, #custom-dnd,
 #pulseaudio, #network, #bluetooth,
 #power-profiles-daemon            { color: @accent; }
 #custom-awake, #custom-dnd.on     { color: @off; }
 #battery      { color: @green; font-family: "Adwaita Sans"; font-size: 14px; }
-#custom-power { color: @pink; font-size: 17px; }   /* ⏻ draws larger; 17px matches the rest */
+#custom-power { color: @pink; font-size: 17px; }   /* ⏻ renders large */
 #tray { padding: 0 4px; }
 #tray.empty { padding: 0; }
 
-/* Now playing - always shown, blue while something is playing */
+/* Now playing */
 #custom-media {
     padding: 0 12px;
     margin: 4px 2px 4px 8px;
     border-radius: 999px;
     background: @media_bg;
     color: @accent;
-    font-weight: 500;
+    font-weight: 400;
 }
 #custom-media.paused,
 #custom-media.idle { color: @dim; background: @media_idle; }
@@ -112,7 +110,7 @@ window#waybar {
 #battery.warning:not(.charging)  { color: @yellow; }
 #battery.critical:not(.charging) { color: @pink; }
 
-/* Hover: a soft pill on everything clickable, like the workspace buttons */
+/* Hover */
 #custom-awake, #custom-dnd, #pulseaudio, #network, #bluetooth,
 #power-profiles-daemon, #battery, #custom-power { border-radius: 999px; }
 #custom-awake:hover, #custom-dnd:hover, #pulseaudio:hover, #network:hover,
@@ -121,8 +119,8 @@ window#waybar {
 
 tooltip {
     background: @tooltip_bg;
-    border: 2px solid @accent;
-    border-radius: 14px;
+    border: 1px solid @island_line;
+    border-radius: 12px;
     padding: 10px 12px;
 }
-tooltip label { color: @fg; font-weight: 500; font-family: "Adwaita Sans"; }
+tooltip label { color: @fg; font-weight: 400; font-family: "Adwaita Sans"; }

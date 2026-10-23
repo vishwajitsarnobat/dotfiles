@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-# Window switcher: lists open windows, most recently used first, in fuzzel.
-# The window you were on before is at the top, so Mod+Tab, Enter flips back.
+# Window switcher, most recent first (so Mod+Tab, Enter goes back)
 import configparser, glob, json, os, subprocess
 
 NAMES = {"dropterm": "Drop-down terminal"}

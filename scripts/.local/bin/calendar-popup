@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-# Calendar card under the bar's clock (click the clock or Mod+Alt+C).
-# Scroll, the arrows or ←/→ change month; the dot or T jumps to today.
-# Esc, a click outside, the same key or Mod+Q closes it (see popup.py).
+# Calendar under the clock. Scroll or ←/→ for months, T for today.
 import calendar, datetime, os, sys
 
 sys.path.insert(0, os.path.expanduser("~/.local/lib/dotfiles"))
@@ -17,27 +15,24 @@ TOP_GAP = 40            # bar height + margins, so the card sits just below it
 FIRST_WEEKDAY = 6       # Sunday first
 
 CSS = b"""
-#card { padding: 18px 18px 14px 18px; margin: 6px 12px 16px 12px; }
-#month { font-size: 17pt; font-weight: 700; color: #f2f2f5; }
-#year  { font-size: 17pt; font-weight: 600; color: #8fb8f6; }
+#card { padding: 16px 16px 14px 16px; margin: 6px 12px 16px 12px; }
+#month { font-size: 15pt; font-weight: 600; color: #f2f2f5; }
+#year  { font-size: 15pt; font-weight: 400; color: #8b8b96; }
 .nav {
     background: transparent; border: none; box-shadow: none;
-    color: #a8a8b3; font-size: 13pt; font-weight: 700;
-    min-width: 30px; min-height: 30px; padding: 0; border-radius: 999px;
+    color: #a8a8b3; font-size: 13pt;
+    min-width: 30px; min-height: 30px; padding: 0; border-radius: 6px;
 }
 .nav:hover { background: rgba(255, 255, 255, 0.08); color: #f2f2f5; }
-.weekday { color: #6b6b76; font-size: 10pt; font-weight: 700; }
+.weekday { color: #6b6b76; font-size: 9.5pt; font-weight: 600; }
 .day {
-    color: #e3e3e8; font-size: 12pt; font-weight: 600;
-    min-width: 38px; min-height: 38px; border-radius: 999px;
+    color: #e3e3e8; font-size: 11pt;
+    min-width: 36px; min-height: 36px; border-radius: 999px;
 }
 .day:hover   { background: rgba(255, 255, 255, 0.08); }
-.weekend     { color: #a8a8b3; }
 .other       { color: #4a4a54; }
-.today       { background: #8fb8f6; color: #1e1e22; font-weight: 800; }
+.today       { background: #8fb8f6; color: #1e1e22; font-weight: 600; }
 .today:hover { background: #a9c9fa; }
-#footer { color: #a8a8b3; font-size: 10.5pt; font-weight: 500; }
-#footer-week { color: #6b6b76; font-size: 10.5pt; font-weight: 600; }
 """
 
 
@@ -48,7 +43,6 @@ class Calendar:
         self.scroll_acc = 0.0
 
     def build(self):
-        today = datetime.date.today()
         card = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12, name="card")
 
         header = Gtk.Box(spacing=8)
@@ -66,12 +60,6 @@ class Calendar:
         self.grid = Gtk.Grid(row_spacing=2, column_spacing=4, column_homogeneous=True)
         card.pack_start(self.grid, False, False, 0)
 
-        footer = Gtk.Box(spacing=8)
-        footer.pack_start(Gtk.Label(label=today.strftime("%A, %-d %B %Y"), name="footer", xalign=0),
-                          True, True, 0)
-        footer.pack_end(Gtk.Label(label=f"Week {today.isocalendar()[1]}", name="footer-week"),
-                        False, False, 0)
-        card.pack_start(footer, False, False, 2)
 
         self.draw_month()
         return card
@@ -107,8 +95,6 @@ class Calendar:
                 lbl = Gtk.Label(label=str(day.day))
                 ctx = lbl.get_style_context()
                 ctx.add_class("day")
-                if day.weekday() >= 5:
-                    ctx.add_class("weekend")
                 if day.month != self.month:
                     ctx.add_class("other")
                 if day == today:

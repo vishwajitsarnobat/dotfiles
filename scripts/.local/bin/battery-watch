@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Warns once at 15% and again at 5% while discharging. Started by niri.
+# Low battery warnings at 15% and 5%
 BAT=$(ls -d /sys/class/power_supply/BAT* 2>/dev/null | head -1)
 [ -n "$BAT" ] || exit 0
 warned=100

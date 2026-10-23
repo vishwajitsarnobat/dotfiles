@@ -1,12 +1,6 @@
-# Shared behaviour for the pop-up cards (calendar-popup, keys-popup).
-#
-# They work like GNOME's menus ("light dismiss"):
-#   - only one is open at a time; opening one closes the other
-#   - it takes the keyboard as soon as it opens, so Esc and arrows work
-#   - Esc, a click anywhere outside the card, running it again (its key or
-#     the clock), or Mod+Q (via popup-close) closes it
-#
-# A full-screen, invisible layer sits behind the card to catch clicks outside it.
+# Shared code for calendar-popup and keys-popup. One popup at a time; it grabs
+# the keyboard, and Esc, a click outside, running it again or Mod+Q
+# (close-focused) closes it. An invisible full-screen layer catches the clicks.
 import os, signal, sys
 
 NAMES = ("calendar-popup", "keys-popup")
@@ -55,9 +49,9 @@ BASE_CSS = b"""
 window { background: transparent; }
 #card {
     background: rgba(30, 30, 34, 0.97);
-    border: 2px solid #8fb8f6;
-    border-radius: 20px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
 }
 """
 
@@ -95,7 +89,6 @@ def run(name, build_card, css=b"", valign="center", top=0, on_key=None, on_scrol
         Gtk.main_quit()
         return False
 
-    # Clicks on the invisible backdrop close the popup; clicks on the card don't
     backdrop = Gtk.EventBox()
     backdrop.connect("button-press-event", quit)
     win.add(backdrop)

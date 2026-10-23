@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Now playing for the bar. Prints once, then again whenever the player changes.
+# Now playing, for the bar
 esc() { sed 's/\\/\\\\/g; s/"/\\"/g'; }
 emit() {
     status=$(playerctl status 2>/dev/null)
@@ -13,7 +13,6 @@ emit() {
     if [ "$status" = "Playing" ]; then icon="󰏤"; class="playing"; else icon="󰐊"; class="paused"; fi
     tip="$title"; [ -n "$artist" ] && tip="$artist - $title"
 
-    # Where it's playing from: app name, plus the website for browsers
     player=$(playerctl metadata --format '{{playerName}}' 2>/dev/null)
     player=${player%%.*}                       # "chromium.instance123" -> "chromium"
     case "$player" in

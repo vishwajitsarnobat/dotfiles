@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-# Drop-down terminal: show it, focus it, or hide it.
-# Hiding closes the window, but the tmux session inside keeps running,
-# so the next show brings back the same shell, history and output.
+# Show / hide the drop-down terminal. Hiding closes the window; tmux keeps
+# the shell running.
 id=$(niri msg -j windows | python3 -c '
 import json, sys
 w = [w for w in json.load(sys.stdin) if w["app_id"] == "dropterm"]
@@ -13,7 +12,6 @@ read -r win focused <<< "$id"
 if [ "$focused" = True ]; then
     niri msg action close-window --id "$win"
 else
-    # Bring it to the current workspace first, then focus it
     cur=$(niri msg -j workspaces | python3 -c '
 import json, sys
 print(next(w["idx"] for w in json.load(sys.stdin) if w["is_focused"]))')

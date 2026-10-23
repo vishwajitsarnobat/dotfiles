@@ -1,12 +1,10 @@
 #!/usr/bin/env bash
-# Locks the screen with gtklock over a blurred copy of the wallpaper.
 pidof gtklock >/dev/null && exit 0
 "$HOME/.local/bin/lockscreen-bg"
 C="$HOME/.config/gtklock"
 args=(-d -s "$C/style.css" -x "$C/layout.ui")
 BG="$HOME/.cache/lockscreen.png"
 [ -f "$BG" ] && args+=(-b "$BG")
-# Freeze the screen and crossfade into the lock screen once it's up (~0.3 s),
-# instead of it popping in, like GNOME's lock animation
+# Fade into the lock screen instead of popping (gtklock takes ~0.3 s)
 niri msg action do-screen-transition --delay-ms 300 2>/dev/null
 exec gtklock "${args[@]}"

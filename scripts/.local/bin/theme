@@ -9,7 +9,7 @@ case "${1:-toggle}" in
     toggle) if [ "$cur" = prefer-dark ]; then mode=light; else mode=dark; fi ;;
     *)      echo "Usage: theme [dark|light]"; exit 1 ;;
 esac
-# color-scheme for GTK 4 apps, gtk-theme for older GTK 3 ones (Disks, Boxes)
+# gtk-theme too, for GTK 3 apps
 if [ "$mode" = light ]; then
     gsettings set $KEY default;     gsettings set $GTK3 Adwaita;      msg="󰖨  Apps: light"
 else
