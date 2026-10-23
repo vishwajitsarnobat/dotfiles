@@ -131,7 +131,20 @@ sudo ln -s /usr/share/applications/gnome-mimeapps.list /usr/share/applications/n
 If that file doesn't exist, skip this step and set default apps in GNOME
 Settings → Apps → Default Apps.
 
-**6. Log in.** Log out, choose **niri** on the login screen, and log in.
+**6. Optional: lock instead of sleeping when you close the lid.** By default
+closing the lid suspends the laptop. To make it only lock (in niri and
+GNOME), install this system setting:
+
+```sh
+sudo install -Dm644 system/etc/systemd/logind.conf.d/10-lid-lock.conf \
+    /etc/systemd/logind.conf.d/10-lid-lock.conf
+sudo systemctl reload systemd-logind
+```
+
+With an external monitor connected, closing the lid does nothing, so you can
+keep working on the big screen. Delete the file to go back to suspending.
+
+**7. Log in.** Log out, choose **niri** on the login screen, and log in.
 Press `Mod + Shift + /` any time for a card with every key, grouped by what
 it does.
 
@@ -242,6 +255,8 @@ and `Esc`, a click anywhere outside, the same key (or tap) again, or
   press `Enter`.
 - **Auto lock:** the screen locks after 15 minutes idle, and the display
   turns off 15 seconds after that.
+- **Closing the lid:** suspends the laptop, or only locks it if you did
+  install step 6.
 - **Before sleep:** the screen always locks, even with keep-awake on.
 - **Keep awake:** turns off the idle lock until you turn it back off, for
   example while watching a video.
@@ -338,6 +353,7 @@ Also update the `rgba(143, 184, 246, …)` line in
 | `wlogout` | [wlogout](https://github.com/ArtsyMacaw/wlogout) | Power menu |
 | `applications` | — | Makes GNOME Settings open from the launcher in niri (it normally refuses to start outside GNOME) |
 | `environment` | systemd | Session-wide settings for both niri and GNOME |
+| `system` | logind | System settings outside your home folder, installed with `sudo` (not Stow); see install step 6 |
 | `scripts` | — | The helper commands below, in `~/.local/bin`, plus `popup.py` in `~/.local/lib/dotfiles`, shared by the two cards |
 
 Helper commands, which you can also run yourself in a terminal:
@@ -371,6 +387,9 @@ Helper commands, which you can also run yourself in a terminal:
   `fc-cache -f` wasn't run. See step 2.
 - **`stow` reports a conflict:** you already have that config. Move it away
   and run `stow` again.
+- **Settings' Bluetooth page says there's no Bluetooth:** GNOME's radio
+  switch service (`gsd-rfkill`) isn't running; niri starts it at login. On
+  another distro, check its path in the niri config.
 - **Settings keys or bar clicks do nothing:** GNOME Settings
   (`gnome-control-center`) isn't installed. Install it with your package
   manager; it comes with any full GNOME install.

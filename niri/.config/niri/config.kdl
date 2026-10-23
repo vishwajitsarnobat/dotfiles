@@ -105,6 +105,9 @@ spawn-sh-at-startup "~/.local/bin/idle-watch"
 // Password prompts for admin actions. Fedora/Debian path first, then Arch's.
 spawn-sh-at-startup "for p in /usr/libexec/polkit-mate-authentication-agent-1 /usr/lib/mate-polkit/polkit-mate-authentication-agent-1; do [ -x $p ] && exec $p; done"
 spawn-sh-at-startup "wl-paste --watch cliphist store"
+// GNOME's radio switch service (rfkill). GNOME Settings' Bluetooth page needs
+// it to see and turn on Bluetooth; GNOME starts it, niri has to.
+spawn-sh-at-startup "for p in /usr/libexec/gsd-rfkill /usr/lib/gsd-rfkill; do [ -x $p ] && exec $p; done"
 spawn-sh-at-startup "~/.local/bin/battery-watch"
 
 // ---------- Window rules ----------

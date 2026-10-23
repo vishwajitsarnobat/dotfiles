@@ -6,4 +6,7 @@ C="$HOME/.config/gtklock"
 args=(-d -s "$C/style.css" -x "$C/layout.ui")
 BG="$HOME/.cache/lockscreen.png"
 [ -f "$BG" ] && args+=(-b "$BG")
+# Freeze the screen and crossfade into the lock screen once it's up (~0.3 s),
+# instead of it popping in, like GNOME's lock animation
+niri msg action do-screen-transition --delay-ms 300 2>/dev/null
 exec gtklock "${args[@]}"
